@@ -14,10 +14,16 @@ use Symfony\Component\Filesystem\Filesystem;
 
 class MakeCommand extends Command
 {
-    const DS = DIRECTORY_SEPARATOR;
-
     protected static $defaultName = 'make';
+   
     private $filesystem;
+    private $config;
+
+    public function __construct(array $config)
+    {
+        parent::__construct();
+        $this->config = $config;
+    }
 
     protected function configure()
     {
@@ -32,23 +38,26 @@ class MakeCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-       $args = $input->getOption('arguments');
+        $className = $input->getArgument('name');
+        $methodName = $input->getArgument('method');
+
+
+        $arguments = $input->getOption('arguments');
     
-        $nameClass = $input->getArgument('name');
 
-        $classParts = array_map(function($section){
-            return ucfirst($section);
-        }, explode(':', $nameClass) );
-        
-        $className = implode(self::DS, $classParts);
-
-        $method = $input->getArgument('method');
+        if (!strpos($className, ':') === false) {
+            $classParts = array_map(function($section){
+                return ucfirst($section);
+            }, explode(':', $className) );
+            
+            $className = implode(DIRECTORY_SEPARATOR, $classParts);
+        }
 
         $class = new LakeGenerator;
-        $class->addMethod($method, $args);
-        $class = $class->generate(end($classParts));
+        $class->addMethod($methodName, $arguments);
+        $class = $class->generate(basename($className));
 
-        $class->addUse('Symfony\Component\Console\Command\Command');
+        $class->addUse('Lake\\Finder\\SourceFinder');
 
         $file = new FileGenerator([
             'classes' => [$class]

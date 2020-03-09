@@ -1,8 +1,24 @@
 #!/usr/bin/env php
 <?php
 
+$executePath = getcwd();
 
-$application = require 'src/bootstrap.php';
+$possibleAutoloadFiles = [__DIR__.'/../../autoload.php', __DIR__.'/../autoload.php', __DIR__.'/vendor/autoload.php'];
+$autoloadFile = null;
+foreach ($possibleAutoloadFiles as $possibleFile) {
+    if (file_exists($possibleFile)) {
+        $autoloadFile = $possibleFile;
+        break;
+    }
+}
 
+if (null === $autoloadFile) {
+    throw new RuntimeException('Unable to locate autoload.php file.');
+}
 
+require_once $autoloadFile;
+
+use Lake\Console\Application;
+
+$application = new Application($executePath);
 $application->run();

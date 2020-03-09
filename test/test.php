@@ -2,13 +2,16 @@
 
 require_once __DIR__.'/../vendor/autoload.php';
 
+$findClass = 'Closuree';
+
+$declaredClasses = get_declared_classes();
+
+
 $classes = array_filter(
-    get_declared_classes(),
-    function($className) {
-        return call_user_func(
-            array(new ReflectionClass($className), 'isInternal')
-        );
+    $declaredClasses,
+    function($className) use ($findClass) {
+        return call_user_func([new ReflectionClass($className), 'isInternal']) && $className == $findClass;
     }
 );
 
-var_export($classes);
+echo current($classes);

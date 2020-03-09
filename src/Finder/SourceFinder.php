@@ -24,7 +24,7 @@ class SourceFinder
         foreach ($regex as $info) {
             preg_match('/([A-Z]\w+).php/', current($info), $matches);
             if (isset($matches[1])) {
-                $classes[$matches[1]][] = current($info);
+                $classes[$matches[1]][] = str_replace($dir, 'Lake', current($info));
             }
         }
 

@@ -1,11 +1,11 @@
 <?php
 
-use Symfony\Component\Console\Command\Command;
+use Lake\Finder\SourceFinder;
 
 class IndexController
 {
 
-    public function index(?Command $command, ?int $id)
+    public function index(Command $command, int $id)
     {
 
     }

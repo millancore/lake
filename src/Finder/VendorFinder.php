@@ -2,9 +2,8 @@
 
 namespace Lake\Finder;
 
-class ClassFinder
+class VendorFinder
 {
-
     private $composerStaticInit = "vendor/composer/autoload_static.php";
     private $classMap;
 
