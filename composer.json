@@ -21,5 +21,8 @@
             "Lake\\": "src/"
         }
     },
-    "bin": ["lake"]
+    "bin": ["lake"],
+    "require-dev": {
+        "phpunit/phpunit": "^7.5"
+    }
 }

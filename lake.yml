@@ -1,0 +1,7 @@
+src:
+  dir: 'src'
+  namespace: 'Lake'
+
+test:
+  dir: 'test'
+  extend: ''

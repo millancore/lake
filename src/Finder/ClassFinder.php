@@ -1,6 +1,6 @@
 <?php
 
-namespace Lake;
+namespace Lake\Finder;
 
 class ClassFinder
 {
