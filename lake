@@ -1,0 +1,8 @@
+#!/usr/bin/env php
+<?php
+
+
+$application = require 'src/bootstrap.php';
+
+
+$application->run();

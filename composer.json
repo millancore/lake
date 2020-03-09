@@ -1,0 +1,25 @@
+{
+    "name": "millancore/lake",
+    "description": "TDD utility for agile project creation",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Juan Millan",
+            "email": "juanes14569@hotmail.com"
+        }
+    ],
+    "require": {
+        "symfony/console": "^4.4",
+        "symfony/filesystem": "^4.4",
+        "symfony/process": "^4.4",
+        "twig/twig": "^2.12",
+        "laminas/laminas-code": "^3.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "Lake\\": "src/"
+        }
+    },
+    "bin": ["lake"]
+}
