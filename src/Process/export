@@ -1,0 +1,43 @@
+#!/usr/bin/env php
+<?php
+
+require_once __DIR__ . '/../../vendor/autoload.php';
+
+$fp = fopen(__DIR__ . '/../../vendor/composer/autoload_static.php', 'r');
+
+$staticClass = $buffer = '';
+$i = 0;
+while (!$staticClass) {
+    if (feof($fp)) break;
+
+    $buffer = fread($fp, 150);
+    $tokens = token_get_all($buffer);
+
+    if (strpos($buffer, '{') === false) continue;
+
+    for (; $i < count($tokens); $i++) {
+        if ($tokens[$i][0] === T_CLASS) {
+            for ($j = $i + 1; $j < count($tokens); $j++) {
+                if ($tokens[$j] === '{') {
+                    $staticClass = $tokens[$i + 2][1];
+                }
+            }
+        }
+    }
+}
+
+$staticClass = '\\Composer\\Autoload\\' . $staticClass;
+
+$classMap = $staticClass::$classMap;
+
+$classes = [];
+
+foreach ($classMap as $key => $value) {
+    $classes[basename($key)][] = $key;
+}
+
+$file = new \Laminas\Code\Generator\FileGenerator([
+    'body' => 'return ' . var_export($classes, true) . ';'
+]);
+
+file_put_contents(__DIR__.'/../../cache/vendor.php', $file->generate());

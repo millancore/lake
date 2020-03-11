@@ -1,12 +1,12 @@
 <?php
 
-namespace Lake;
+namespace Lake\Process;
 
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Process\PhpExecutableFinder;
 use Symfony\Component\Process\Process;
 
-class Composer
+class ProcessManager
 {
     /**
      * The filesystem instance.
@@ -41,13 +41,22 @@ class Composer
      * @param  string|array  $extra
      * @return void
      */
-    public function dumpAutoloads($extra = '')
+    public function dumpAutoloads($extra = [])
     {
-        $extra = $extra ? (array) $extra : [];
-
         $command = array_merge($this->findComposer(), ['dump-autoload'], $extra);
+        $process = $this->getProcess($command);
 
-        $this->getProcess($command)->run();        
+        return $process->run();        
+    }
+
+    public function dumpVendor()
+    {
+        $command = [$this->phpBinary(),  __DIR__.'/export'];
+        $process = new Process($command, $this->workingPath);
+        $process->setTimeout(null);
+        $process->run();
+        
+        return $process;
     }
 
     /**
@@ -57,8 +66,19 @@ class Composer
      */
     public function dumpOptimized()
     {
-        $this->dumpAutoloads('--optimize');
+        $command = ['dump-autoload', '--optimize', '--no-dev'];
+
+        $command = array_merge($this->findComposer(), $command);
+
+        $process = new Process($command, $this->workingPath);
+        $process->setTimeout(null);
+        $process->run();
+        
+        return $process;
     }
+
+
+
 
     /**
      * Get the composer command for the environment.
@@ -92,7 +112,7 @@ class Composer
      */
     protected function getProcess(array $command)
     {
-        return (new Process($command, $this->workingPath))->setTimeout(null);
+        return new Process($command, $this->workingPath);
     }
 
     /**

@@ -2,7 +2,10 @@
 
 namespace Lake\Command;
 
+use Lake\Finder\Finder;
 use Lake\Generator\LakeGenerator;
+use Lake\Validation\ParameterValidation;
+use Lake\Validation\TypeValidation;
 use Laminas\Code\Generator\FileGenerator;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -41,9 +44,33 @@ class MakeCommand extends Command
         $className = $input->getArgument('name');
         $methodName = $input->getArgument('method');
 
-
         $arguments = $input->getOption('arguments');
-    
+
+        $helper = $this->getHelper('question');
+
+
+        $selectedUses = [];
+        $parameters = [];
+
+        foreach ($arguments as $argument) {
+
+            list($type, $varName) = ParameterValidation::validate($argument);
+
+            if (!TypeValidation::isPhpType($type)) {
+                $uses = Finder::findClassByName($type);
+
+                if (count($uses) > 1) {
+                    $question = new ChoiceQuestion(
+                        sprintf('Please select a class for the "%s" parameter.', $type),
+                        $uses
+                    );
+
+                    $selectedUses[] = $helper->ask($input, $output, $question);
+                }
+            }
+
+            $parameters[] = [$type, $varName]; 
+        }
 
         if (!strpos($className, ':') === false) {
             $classParts = array_map(function($section){

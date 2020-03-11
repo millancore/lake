@@ -2,9 +2,10 @@
 
 namespace Lake\Finder;
 
+use Lake\Contract\FinderInterface;
 use ReflectionClass;
 
-class InternalFinder
+class InternalFinder implements FinderInterface
 {
     private $declaredClasses;
 
@@ -13,17 +14,17 @@ class InternalFinder
         $this->declaredClasses = get_declared_classes();
     }
 
-    public function findClass(string $findClass)
+    public function findClass(string $className) : array
     {
         $result = array_filter(
             $this->declaredClasses,
-            function($className) use ($findClass) {
+            function($class) use ($className) {
                 return call_user_func([
-                    new ReflectionClass($className), 'isInternal'
-                ]) && $className == $findClass;
+                    new ReflectionClass($class), 'isInternal'
+                ]) && $class == $className;
             }
         );
 
-        return current($result);
+        return $result;
     }
 }

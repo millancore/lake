@@ -2,16 +2,32 @@
 
 namespace Lake\Finder;
 
+use Lake\Contract\FinderInterface;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use RecursiveRegexIterator;
 use RegexIterator;
 
-class SourceFinder
+class SourceFinder implements FinderInterface
 {
-    private $src;
+    private $classMap;
 
     public function __construct()
+    {
+        $this->loadClassMap();
+
+    }
+
+    public function findClass(String $className) : array
+    {
+        if(isset($this->classMap[$className])) {
+            return $this->classMap[$className];
+        }
+
+        return [];
+    }
+
+    private function loadClassMap()
     {
         $dir = getcwd().DIRECTORY_SEPARATOR.'src';
 
@@ -24,16 +40,12 @@ class SourceFinder
         foreach ($regex as $info) {
             preg_match('/([A-Z]\w+).php/', current($info), $matches);
             if (isset($matches[1])) {
-                $classes[$matches[1]][] = str_replace($dir, 'Lake', current($info));
+                $class = str_replace($matches[0], $matches[1], current($info));
+                $classes[$matches[1]][] = str_replace($dir, 'Lake', $class);
             }
         }
 
-        var_export($classes);
-
+        $this->classMap = $classes;
     }
 
-    public function findType(string $type)
-    {
-        
-    }
 }

@@ -1,3 +1,4 @@
+mode: 'loose'
 src:
   dir: 'src'
   namespace: 'Lake'

@@ -2,61 +2,35 @@
 
 namespace Lake\Finder;
 
-class VendorFinder
+use Lake\Contract\FinderInterface;
+use Symfony\Component\Filesystem\Exception\FileNotFoundException;
+
+class VendorFinder implements FinderInterface
 {
-    private $composerStaticInit = "vendor/composer/autoload_static.php";
     private $classMap;
 
     public function __construct()
     {
-        
+        $this->loadClassMap();
     }
 
-    public function findClass(String $className): array
+    public function findClass(String $className) : array
     {
-        # Load class Map
-        $this->loadClassMap();
-
-        $pfix = "\\$className";
-        $len = strlen($pfix);
-
-        $list = [];
-
-        foreach ($this->classMap as $class => $path) {
-            if (substr_compare($class, $pfix, -$len, $len) === 0) {
-                $list[] = $class;
-            }
+        if(isset($this->classMap[$className])) {
+            return $this->classMap[$className];
         }
 
-        return $list;
+        return [];
     }
 
     private function loadClassMap()
     {
-        $fp = fopen($this->composerStaticInit, 'r');
+        $vendorFileClassMap = LAKE_ROOT.DIRECTORY_SEPARATOR.'cache/vendor.php';
 
-        $staticClass = $buffer = '';
-        $i = 0;
-        while (!$staticClass) {
-            if (feof($fp)) break;
-
-            $buffer = fread($fp, 150);
-            $tokens = token_get_all($buffer);
-
-            if (strpos($buffer, '{') === false) continue;
-
-            for (; $i < count($tokens); $i++) {
-                if ($tokens[$i][0] === T_CLASS) {
-                    for ($j = $i + 1; $j < count($tokens); $j++) {
-                        if ($tokens[$j] === '{') {
-                            $staticClass = $tokens[$i + 2][1];
-                        }
-                    }
-                }
-            }
+        if(!file_exists($vendorFileClassMap)) {
+            throw new FileNotFoundException('Vendor class map no found!');
         }
 
-        $staticClass = '\\Composer\\Autoload\\'.$staticClass;
-        $this->classMap = $staticClass::$classMap;
+        $this->classMap = include $vendorFileClassMap;
     }
 }
