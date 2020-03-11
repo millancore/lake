@@ -1,4 +1,4 @@
-![lake logo](./logo.jpg)
+<p align="center"><img src="https://raw.githubusercontent.com/millancore/lake/master/logo.jpg"></p>
 
 
 # Lake 
