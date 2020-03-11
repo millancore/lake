@@ -8,6 +8,7 @@ use Laminas\Code\Generator\MethodGenerator;
 class LakeGenerator {
     
     private $path;
+    private $namespace;
     private $method;
     private $parameters;
     private $uses;
@@ -17,12 +18,14 @@ class LakeGenerator {
 
     public function __construct(
         string $path,
+        string $namespace,
         string $method,
         array $parameters,
         array $uses
     )
     {
         $this->path = $path;
+        $this->namespace = $namespace;
         $this->method = $method;
         $this->parameters = $parameters;
         $this->uses = $uses;
@@ -32,6 +35,7 @@ class LakeGenerator {
     {
         $this->class = new ClassGenerator;
         $this->class->setName(basename($this->path));
+        $this->class->setNamespaceName($this->namespace);
 
         $this->addMethod($this->method, $this->parameters);
         $this->addUses($this->uses);

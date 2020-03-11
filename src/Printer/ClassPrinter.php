@@ -19,14 +19,23 @@ class ClassPrinter
     
     public function print(ClassGenerator $class, string $path)
     {
-        $classFile = $this->fileGenerator->setClass($class);
+        $newFile = new FileGenerator;
+
+        $classFile = $newFile->setClass($class);
 
         return $classFile->generate();                                                                                                                                                                                                                                              
     }
 
-    public function printFile(ClassGenerator $class, string $path)
+    public function printFile(ClassGenerator $class, string $path, string $name = null)
     {
         $content = $this->print($class, $path);
+
+        if(!is_null($name)) {
+            $path = str_replace(basename($path), $name, $path);
+        }
+
         $this->filesystem->dumpFile($path.'.php', $content);
     }
+
+    
 }

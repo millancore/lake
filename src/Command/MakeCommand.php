@@ -83,10 +83,20 @@ class MakeCommand extends Command
 
         $classPath = ClassValidation::validate($classPath);
 
-        $lake = new LakeGenerator($classPath, $methodName, $parameters, $selectedUses);
+        $lake = new LakeGenerator(
+            $classPath,
+            dirname(str_replace('.'.DS.$this->config['src']['dir'], $this->config['src']['namespace'], $classPath)),
+            $methodName,
+            $parameters,
+            $selectedUses
+        );
     
         $this->classPrinter->printFile($lake->getClass(), $classPath);
-        $this->classPrinter->printFile($lake->getTest(), str_replace('src', 'test', $classPath));
+        $this->classPrinter->printFile(
+            $lake->getTest(),
+            str_replace('src', 'test', $classPath),
+            basename($classPath).'Test'
+        );
 
         return 0;
     }
