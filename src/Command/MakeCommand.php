@@ -4,6 +4,8 @@ namespace Lake\Command;
 
 use Lake\Finder\Finder;
 use Lake\Generator\LakeGenerator;
+use Lake\Printer\ClassPrinter;
+use Lake\Validation\ClassValidation;
 use Lake\Validation\ParameterValidation;
 use Lake\Validation\TypeValidation;
 use Laminas\Code\Generator\FileGenerator;
@@ -19,13 +21,16 @@ class MakeCommand extends Command
 {
     protected static $defaultName = 'make';
    
+    /** @var Filesystem */
     private $filesystem;
     private $config;
+    private $classPrinter;
 
     public function __construct(array $config)
     {
         parent::__construct();
         $this->config = $config;
+        $this->classPrinter = new ClassPrinter(new FileGenerator, new Filesystem);
     }
 
     protected function configure()
@@ -41,7 +46,7 @@ class MakeCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $className = $input->getArgument('name');
+        $classPath = $input->getArgument('name');
         $methodName = $input->getArgument('method');
 
         $arguments = $input->getOption('arguments');
@@ -59,6 +64,10 @@ class MakeCommand extends Command
             if (!TypeValidation::isPhpType($type)) {
                 $uses = Finder::findClassByName($type);
 
+                if (count($uses) == 1) {
+                    $selectedUses[] = current($uses);
+                }
+
                 if (count($uses) > 1) {
                     $question = new ChoiceQuestion(
                         sprintf('Please select a class for the "%s" parameter.', $type),
@@ -72,30 +81,12 @@ class MakeCommand extends Command
             $parameters[] = [$type, $varName]; 
         }
 
-        if (!strpos($className, ':') === false) {
-            $classParts = array_map(function($section){
-                return ucfirst($section);
-            }, explode(':', $className) );
-            
-            $className = implode(DIRECTORY_SEPARATOR, $classParts);
-        }
+        $classPath = ClassValidation::validate($classPath);
 
-        $class = new LakeGenerator;
-        $class->addMethod($methodName, $arguments);
-        $class = $class->generate(basename($className));
-
-        $class->addUse('Lake\\Finder\\SourceFinder');
-
-        $file = new FileGenerator([
-            'classes' => [$class]
-        ]);
-
+        $lake = new LakeGenerator($classPath, $methodName, $parameters, $selectedUses);
     
-        # Class
-        $this->filesystem->dumpFile($className.'.php', $file->generate());
-
-        # Test
-        //$this->filesystem->appendToFile('test'.self::DS.$className.'Test.php', 'test!!');
+        $this->classPrinter->printFile($lake->getClass(), $classPath);
+        $this->classPrinter->printFile($lake->getTest(), str_replace('src', 'test', $classPath));
 
         return 0;
     }

@@ -1,9 +1,15 @@
 #!/usr/bin/env php
 <?php
 
-require_once __DIR__ . '/../../vendor/autoload.php';
+require_once $argv[1];
 
-$fp = fopen(__DIR__ . '/../../vendor/composer/autoload_static.php', 'r');
+$staticMapFile = str_replace(
+    'autoload.php',
+    'composer/autoload_static.php',
+    $argv[1]
+);
+
+$fp = fopen($staticMapFile, 'r');
 
 $staticClass = $buffer = '';
 $i = 0;
@@ -40,4 +46,4 @@ $file = new \Laminas\Code\Generator\FileGenerator([
     'body' => 'return ' . var_export($classes, true) . ';'
 ]);
 
-file_put_contents(__DIR__.'/../../cache/vendor.php', $file->generate());
+file_put_contents($argv[2].'/vendor.php', $file->generate());

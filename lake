@@ -1,28 +1,9 @@
 #!/usr/bin/env php
 <?php
 
-if (!defined('LAKE_ROOT')) {
-    define('LAKE_ROOT', realpath(__DIR__));
-}
-
-$executePath = getcwd();
-
-$possibleAutoloadFiles = [__DIR__.'/../../autoload.php', __DIR__.'/../autoload.php', __DIR__.'/vendor/autoload.php'];
-$autoloadFile = null;
-foreach ($possibleAutoloadFiles as $possibleFile) {
-    if (file_exists($possibleFile)) {
-        $autoloadFile = $possibleFile;
-        break;
-    }
-}
-
-if (null === $autoloadFile) {
-    throw new RuntimeException('Unable to locate autoload.php file.');
-}
-
-require_once $autoloadFile;
+require __DIR__.'/bootstrap.php';
 
 use Lake\Console\Application;
 
-$application = new Application($executePath);
+$application = new Application();
 $application->run();

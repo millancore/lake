@@ -7,31 +7,70 @@ use Laminas\Code\Generator\MethodGenerator;
 
 class LakeGenerator {
     
+    private $path;
+    private $method;
+    private $parameters;
+    private $uses;
+
+    /** @var ClassGenerator */
     private $class;
 
-    public function __construct()
+    public function __construct(
+        string $path,
+        string $method,
+        array $parameters,
+        array $uses
+    )
     {
-        $this->class = new ClassGenerator();
+        $this->path = $path;
+        $this->method = $method;
+        $this->parameters = $parameters;
+        $this->uses = $uses;
     }
 
-
-    public function generate(String $className)
+    public function getClass()
     {
-        $this->class->setName($className);
+        $this->class = new ClassGenerator;
+        $this->class->setName(basename($this->path));
+
+        $this->addMethod($this->method, $this->parameters);
+        $this->addUses($this->uses);
 
         return $this->class;
     }
 
-    public function addMethod(String $name, $params = [] )
+    public function getTest()
+    {
+        $test = new ClassGenerator;
+        $test->setName(basename($this->path).'Test');
+        $test->setExtendedClass('TestCase');
+
+
+        $testMethod = new MethodGenerator('test'.ucfirst($this->method));
+        $testMethod->setBody(' ');
+
+        $test->addMethods([$testMethod]);
+        $test->addUse('PHPUnit\Framework\TestCase');
+
+        return $test;
+    }
+
+    private function addMethod(string $name, $parameters = [] )
     {
         $method = new MethodGenerator($name);
 
-        $method->setParameter(new ParameterGenerator('command', 'Command', null));
-        $method->setParameter(new ParameterGenerator('id', 'int'));
+        foreach ($parameters as $parameter) {
+            $method->setParameter(new ParameterGenerator($parameter[1], $parameter[0]));
+        }
 
         $method->setBody(' ');
-
-
         $this->class->addMethods([$method]);
+    }
+
+    private function addUses(array $uses)
+    {
+        foreach ($uses as $use) {
+            $this->class->addUse($use);
+        }
     }
 }

@@ -12,16 +12,16 @@ class Application extends BaseApplication
 
     private $config;
 
-    public function __construct(string $executePath)
+    public function __construct()
     {
         parent::__construct('Lake, TDD Code Mirror', self::VERSION);
-        $this->loadConfig($executePath);
+        $this->loadConfig();
         $this->loadCommands();
     }
 
-    private function loadConfig($path)
+    private function loadConfig()
     {
-        $configFile = $path.DIRECTORY_SEPARATOR.'lake.yml';
+        $configFile = EXECUTE_PATH.DS.'lake.yml';
 
         if (!file_exists($configFile)) {
             throw new RuntimeException('Unable to locate lake.yml file.');

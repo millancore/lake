@@ -14,12 +14,10 @@ class DumpCommand extends Command
 {
     protected static $defaultName = 'dump';
     private $processManager;
-    private $vendorFinder;
 
     protected function configure()
     {
         $this->processManager = new ProcessManager(new Filesystem);
-        $this->vendorFinder = new VendorFinder;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)

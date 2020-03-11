@@ -51,7 +51,7 @@ class ProcessManager
 
     public function dumpVendor()
     {
-        $command = [$this->phpBinary(),  __DIR__.'/export'];
+        $command = [$this->phpBinary(),  __DIR__.'/export', AUTOLOAD_PATH, LAKE_CACHE];
         $process = new Process($command, $this->workingPath);
         $process->setTimeout(null);
         $process->run();
