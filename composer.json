@@ -27,7 +27,8 @@
         }
     },
     "scripts": {
-        "test": "phpunit"
+        "test": "phpunit",
+        "coverage": "phpunit --coverage-html ./tests/coverage"
     },
     "bin": ["lake"]
 
