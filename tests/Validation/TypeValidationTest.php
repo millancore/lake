@@ -7,7 +7,7 @@ class TypeValidationTest extends TestCase
 {
     public function testValidateType()
     {
-        $this->assertFalse(TypeValidation::validate('Command'));
+        $this->assertTrue(TypeValidation::validate('Command'));
     }
 
     

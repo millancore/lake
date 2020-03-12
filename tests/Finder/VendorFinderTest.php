@@ -9,6 +9,6 @@ class VendorFinderTest extends TestCase
     {
         $finder = new VendorFinder;
 
-        var_export($finder->findClass('Exception'));
+        $this->assertIsArray($finder->findClass('Exception'));
     }
 }

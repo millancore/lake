@@ -5,11 +5,14 @@ env:
     - CC_TEST_REPORTER_ID=0fc051f1d6ef3964bc71d0e925b0e6186a75c6445a58e2fd33663584b2d8fc15
 language: php
 
+php:
+- 7.1
+
 before_script:
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
   - chmod +x ./cc-test-reporter
   - ./cc-test-reporter before-build
 script:
-  - bundle exec rspec
+  - composer test -- --coverage-clover=coverage.xml
 after_script:
   - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT

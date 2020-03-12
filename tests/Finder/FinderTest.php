@@ -8,10 +8,7 @@ class FinderTest extends TestCase
 
     public function testFindClass()
     {
-        $result = Finder::findClassByName('ParameterGenerator'); 
-
-        var_export($result);
-        die;
+        $result = Finder::findClassByName('Closure'); 
 
         $this->assertEquals(['Closure'], $result);
         $this->assertIsArray($result);
