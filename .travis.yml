@@ -14,6 +14,7 @@ before_script:
   - ./cc-test-reporter before-build
 script:
   - composer install
+  - composer lake-dump
   - composer test -- --coverage-clover=coverage.xml
 after_script:
   - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
