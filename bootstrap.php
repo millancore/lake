@@ -1,6 +1,9 @@
 <?php
 
-define('DS', DIRECTORY_SEPARATOR);
+if (!defined('DS')) {
+    define('DS', DIRECTORY_SEPARATOR);
+}
+
 define('LAKE_ROOT', realpath(__DIR__));
 define('LAKE_CACHE', LAKE_ROOT.DS.'cache');
 define('EXECUTE_PATH', getcwd());
