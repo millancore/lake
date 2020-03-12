@@ -9,7 +9,9 @@ class SourceFinderTest extends TestCase
     {
         $finder = new SourceFinder();
 
-        $finder->findType('Command');
+        $result = $finder->findClass('Command');
+    
+        $this->assertIsArray($result);
     }
 
 }

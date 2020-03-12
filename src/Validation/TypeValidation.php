@@ -50,6 +50,8 @@ class TypeValidation
             throw new InvalidArgumentException(sprintf('%s cannot be used as a parameter type', $trimmedType));
         }
 
+        return true;
+
     }
 
     public static function isPhpType(string $type)
