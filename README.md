@@ -1,7 +1,9 @@
 <p align="center"><img src="https://raw.githubusercontent.com/millancore/lake/master/logo.jpg"></p>
 
 <p align="center">
+<a href="https://travis-ci.org/millancore/lake?branch=master"><img src="https://travis-ci.org/millancore/lake.svg?branch=master" alt="Build Status"></a>
 <a href="https://codeclimate.com/github/millancore/lake/maintainability"><img src="https://api.codeclimate.com/v1/badges/802c342410008cbd8c08/maintainability" /></a>
+<a href="https://codeclimate.com/github/millancore/lake/test_coverage"><img src="https://api.codeclimate.com/v1/badges/802c342410008cbd8c08/test_coverage" /></a>
 </p>
 
 Lake is a command line utility that allows you to dynamically create classes and methods and create your reflexes for testing.
