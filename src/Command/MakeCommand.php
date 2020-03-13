@@ -30,7 +30,7 @@ class MakeCommand extends Command
     {
         parent::__construct();
         $this->config = $config;
-        $this->classPrinter = new ClassPrinter(new FileGenerator, new Filesystem);
+        $this->classPrinter = new ClassPrinter(new Filesystem);
     }
 
     protected function configure()

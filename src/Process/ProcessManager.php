@@ -2,6 +2,7 @@
 
 namespace Lake\Process;
 
+use InvalidArgumentException;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Process\PhpExecutableFinder;
 use Symfony\Component\Process\Process;
@@ -22,6 +23,14 @@ class ProcessManager
      */
     protected $workingPath;
 
+
+    /**
+     * Storage commands
+     *
+     * @var array
+     */
+    protected $commands;
+
     /**
      * Create a new Composer manager instance.
      *
@@ -36,48 +45,85 @@ class ProcessManager
     }
 
     /**
-     * Regenerate the Composer autoloader files.
+     * Register new command
      *
-     * @param  string|array  $extra
+     * @param string $name
+     * @param array $command
      * @return void
      */
-    public function dumpAutoloads($extra = [])
+    public function register(string $name, array $command)
     {
-        $command = array_merge($this->findComposer(), ['dump-autoload'], $extra);
-        $process = $this->getProcess($command);
-
-        return $process->run();        
-    }
-
-    public function dumpVendor()
-    {
-        $command = [$this->phpBinary(),  __DIR__.'/export', AUTOLOAD_PATH, LAKE_CACHE];
-        $process = new Process($command, $this->workingPath);
-        $process->setTimeout(null);
-        $process->run();
-        
-        return $process;
+        $this->commands[$name] = $command;
     }
 
     /**
-     * Regenerate the optimized Composer autoloader files.
+     * Add php command
      *
+     * @param string $name
+     * @param array $command
      * @return void
      */
-    public function dumpOptimized()
+    public function addPhpCommand(string $name, array $command)
     {
-        $command = ['dump-autoload', '--optimize', '--no-dev'];
+        $command = array_merge([$this->phpBinary()], $command);
+        $this->register($name, $command);
+    }
 
+    /**
+     * Add Composer command
+     *
+     * @param string $name
+     * @param array $command
+     * @return void
+     */
+    public function addComposerCommand(string $name, array $command)
+    {
         $command = array_merge($this->findComposer(), $command);
+        $this->register($name, $command);
+    }
 
-        $process = new Process($command, $this->workingPath);
-        $process->setTimeout(null);
-        $process->run();
-        
-        return $process;
+    /**
+     * Get registered command
+     *
+     * @param string $name
+     * @return array 
+     */
+    public function getCommand(string $name): array
+    {
+        if (!isset($this->commands[$name])) {
+            throw new InvalidArgumentException(sprintf('The command "%s" has not been registered', $name));
+        }
+
+        return $this->commands[$name];
     }
 
 
+    /**
+     * Runn registered command
+     *
+     * @param string $name
+     * @param array $arguments
+     * @return \Symfony\Component\Process\Process
+     */
+    public function __call(string $name, array $arguments = [])
+    {
+        return $this->run($this->getCommand($name));
+    }
+
+    /**
+     * Run command
+     *
+     * @param array $command
+     * @return \Symfony\Component\Process\Process
+     */
+    private function run(array $command)
+    {
+        $process = $this->getProcess($command);
+        $process->setTimeout(null);
+        $process->run();
+
+        return $process;
+    }
 
 
     /**
@@ -87,7 +133,7 @@ class ProcessManager
      */
     protected function findComposer()
     {
-        if ($this->files->exists($this->workingPath.'/composer.phar')) {
+        if ($this->files->exists($this->workingPath . '/composer.phar')) {
             return [$this->phpBinary(), 'composer.phar'];
         }
 
@@ -126,5 +172,15 @@ class ProcessManager
         $this->workingPath = realpath($path);
 
         return $this;
+    }
+
+    /**
+     * Get working path used by the class.
+     *
+     * @return string
+     */
+    public function getWorkingPath()
+    {
+        return $this->workingPath;
     }
 }

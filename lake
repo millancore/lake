@@ -5,5 +5,5 @@ require __DIR__.'/bootstrap.php';
 
 use Lake\Console\Application;
 
-$application = new Application();
+$application = new Application(getcwd());
 $application->run();

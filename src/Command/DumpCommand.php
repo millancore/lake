@@ -18,19 +18,26 @@ class DumpCommand extends Command
     protected function configure()
     {
         $this->processManager = new ProcessManager(new Filesystem);
+        $this->processManager->addComposerCommand('dump', ['dump-autoload']);
+        $this->processManager->addComposerCommand('optimize',[
+            'dump-autoload', '--optimize', '--no-dev'
+        ]);
+        $this->processManager->addPhpCommand('map', [
+            __DIR__ . '/../Process/export', AUTOLOAD_PATH, LAKE_CACHE
+        ]);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $output->writeln('Generating index vendor...');
 
-        $process = $this->processManager->dumpOptimized();
+        $process = $this->processManager->optimize();
 
         if ($process->isSuccessful()) {
-            $secondProcess = $this->processManager->dumpVendor();
+            $secondProcess = $this->processManager->map();
 
             if ($secondProcess->isSuccessful()) {
-                $this->processManager->dumpAutoloads();
+                $this->processManager->dump();
             } else {
                 throw new ProcessFailedException($secondProcess);
             }

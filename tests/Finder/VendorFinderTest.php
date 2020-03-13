@@ -19,15 +19,9 @@ class VendorFinderTest extends TestCase
 
     public function testFindeClassInvalidFileMap()
     {
-        try {
-            $finder = new VendorFinder('invalid/path/to/vendorMapFile');
-        } catch (\Throwable $exception) {
-            $this->assertInstanceOf(FileNotFoundException::class, $exception);
-            $this->assertEquals('Vendor class map no found!', $exception->getMessage());
-        }
-       
-        # We have to add try catch block because this No works
-        //$this->expectException(\Symfony\Component\Filesystem\Exception\FileNotFoundException::class);
-        //$this->expectExceptionMessage('Vendor class map no found!');
+        $this->expectException(FileNotFoundException::class);
+        $this->expectExceptionMessage('Vendor class map no found!');
+
+        $finder = new VendorFinder('invalid/path/to/vendorMapFile');
     }
 }

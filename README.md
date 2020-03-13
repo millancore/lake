@@ -49,11 +49,6 @@ If the parameter accepts null
 ```bash
 ...ClassName MethodName -a ?Request
 ```
-Default value 
-
-```bash
-...ClassName MethodName -a Int:id->123
-```
 
 ### Return Type
 
