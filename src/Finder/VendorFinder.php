@@ -9,9 +9,9 @@ class VendorFinder implements FinderInterface
 {
     private $classMap;
 
-    public function __construct()
+    public function __construct(string $vendorFileClassMap)
     {
-        $this->loadClassMap();
+        $this->loadClassMap($vendorFileClassMap);
     }
 
     public function findClass(String $className) : array
@@ -23,9 +23,8 @@ class VendorFinder implements FinderInterface
         return [];
     }
 
-    private function loadClassMap()
+    private function loadClassMap($vendorFileClassMap)
     {
-        $vendorFileClassMap = LAKE_ROOT.DIRECTORY_SEPARATOR.'cache/vendor.php';
 
         if(!file_exists($vendorFileClassMap)) {
             throw new FileNotFoundException('Vendor class map no found!');

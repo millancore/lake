@@ -10,10 +10,12 @@ class Finder implements FinderInterface
 
     public function __construct()
     {
+        $vendorFileClassMap = LAKE_ROOT.DS.'cache/vendor.php';
+
         $this->finders = [
           new InternalFinder,
           new SourceFinder,
-          new VendorFinder
+          new VendorFinder($vendorFileClassMap)
         ];
         
     }

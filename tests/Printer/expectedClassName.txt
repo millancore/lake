@@ -1,0 +1,17 @@
+<?php
+
+namespace Lake\Tests\Name;
+
+use Lake\Uses\Request;
+
+class TestClass
+{
+
+    public function show(int $id, Request $request)
+    {
+
+    }
+
+
+}
+

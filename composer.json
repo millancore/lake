@@ -18,13 +18,16 @@
         "symfony/cache": "^4.4"
     },
     "require-dev": {
-        "phpunit/phpunit": "7.5",
+        "phpunit/phpunit": "^7.5",
         "phpstan/phpstan": "^0.12.14"
     },
     "autoload": {
         "psr-4": {
             "Lake\\": "src/"
         }
+    },
+    "autoload-dev": {
+        "psr-4": { "Lake\\Tests\\": "tests/" }
     },
     "scripts": {
         "test": "./vendor/bin/phpunit",

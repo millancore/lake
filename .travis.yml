@@ -1,5 +1,3 @@
-# single test suite, non-parallel build.
-
 env:
   global:
     - CC_TEST_REPORTER_ID=0fc051f1d6ef3964bc71d0e925b0e6186a75c6445a58e2fd33663584b2d8fc15

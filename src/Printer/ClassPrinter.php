@@ -8,16 +8,14 @@ use Symfony\Component\Filesystem\Filesystem;
 
 class ClassPrinter
 {
-    private $fileGenerator;
     private $filesystem;
 
-    public function __construct(FileGenerator $fileGenerator, Filesystem $filesystem)
+    public function __construct(Filesystem $filesystem)
     {
-        $this->fileGenerator = $fileGenerator;
         $this->filesystem = $filesystem;
     }
     
-    public function print(ClassGenerator $class, string $path)
+    public function print(ClassGenerator $class)
     {
         $newFile = new FileGenerator;
 
@@ -26,7 +24,7 @@ class ClassPrinter
         return $classFile->generate();                                                                                                                                                                                                                                              
     }
 
-    public function printFile(ClassGenerator $class, string $path, string $name = null)
+    public function printFile(ClassGenerator $class, string $path, string $name = null, string $ext = 'php')
     {
         $content = $this->print($class, $path);
 
@@ -34,7 +32,7 @@ class ClassPrinter
             $path = str_replace(basename($path), $name, $path);
         }
 
-        $this->filesystem->dumpFile($path.'.php', $content);
+        $this->filesystem->dumpFile($path.'.'.$ext, $content);
     }
 
     
