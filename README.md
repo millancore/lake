@@ -33,18 +33,18 @@ vendor/bin/lake make src/DirName/ClassName MethodName
 ## Options
 
 
-Option | Name   | Example | Result | Description
------- | ------ | ------- | ------ | -----------
-**-e** | Extends    | `-e Controller` | `extends Controller`| Define the class of the one that extends. 
-**-i** | Implements | `-i NameInterface` | `implements NameInterface` | It defines the interfaces implements, you can use this option many times. 
-**-a** | Arguments  | `-a Int:id` | `int $id` | Arguments, you can use this option many times.
-   -   |    -       | `-a Request` | `Request $request` | If the name of the variable is not defined Lake will create the variable name from the type.
-   -   |    -       | `-a ?Array:params` | `?array $params` | Nullable argument.
-**-r** | Return     | `-r Response` | `: Response` | Defines the type of return.
-**-d** | DocBlock   | `-d 'description method'` | method Docblock | Description of the method.
-**-v** | Visibility | `-v pub` | `public func..` | It defines the visibility of the method, by default it is `public`.
-   -   |    -       | `-v pro` | `protected func..` | Defines visibility as protected.
-   -   |    -       | `-v pri` | `private func..` | Defines visibility as private.
+Option | Name   | Example | Description
+------ | ------ | ------- | -----------
+**-e** | Extends    | `-e Controller` |  Define the class of the one that extends. 
+**-i** | Implements | `-i NameInterface` | It defines the interfaces implements, you can use this option many times. 
+**-a** | Arguments  | `-a Int:id` | Arguments, you can use this option many times.
+...    | ...       | `-a Request`| If the name of the variable is not defined Lake will create the variable name from the type.
+...    | ...       | `-a ?Array:params` | Nullable argument.
+**-r** | Return     | `-r Response` | Defines the type of return.
+**-d** | DocBlock   | `-d 'description method'` | DocBlock Description of the method.
+**-v** | Visibility | `-v pub` | It defines the visibility of the method, by default it is `public`.
+...    | ...       | `-v pro` | Defines visibility as `protected`.
+...    | ...       | `-v pri` | Defines visibility as `private`.
 
 
 
