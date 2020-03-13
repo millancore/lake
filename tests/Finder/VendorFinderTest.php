@@ -12,7 +12,7 @@ class VendorFinderTest extends TestCase
 
         $result = $finder->findClass('VendorFinder');
 
-        $this->assertEquals(['Lake\\Finder\\VendorFinder'], $result);
+        $this->assertEquals([VendorFinder::class], $result);
         $this->assertIsArray($result);
     }
 

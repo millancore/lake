@@ -23,7 +23,7 @@ class DumpCommand extends Command
             'dump-autoload', '--optimize', '--no-dev'
         ]);
         $this->processManager->addPhpCommand('map', [
-            __DIR__ . '/../Process/export', AUTOLOAD_PATH, LAKE_CACHE
+            LAKE_ROOT . '/src/Process/export', AUTOLOAD_PATH, LAKE_CACHE
         ]);
     }
 

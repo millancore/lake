@@ -1,6 +1,6 @@
 {
     "name": "millancore/lake",
-    "description": "TDD utility for agile project creation",
+    "description": "Command line utility for agile project creation",
     "type": "library",
     "license": "MIT",
     "authors": [
@@ -24,7 +24,8 @@
     "autoload": {
         "psr-4": {
             "Lake\\": "src/"
-        }
+        },
+        "files": ["src/helpers.php"]
     },
     "autoload-dev": {
         "psr-4": { "Lake\\Tests\\": "tests/" }

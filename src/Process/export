@@ -39,7 +39,7 @@ $classMap = $staticClass::$classMap;
 $classes = [];
 
 foreach ($classMap as $key => $value) {
-    $classes[basename($key)][] = $key;
+    $classes[base_name($key)][] = $key;
 }
 
 $file = new \Laminas\Code\Generator\FileGenerator([
