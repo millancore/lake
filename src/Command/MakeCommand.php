@@ -8,7 +8,6 @@ use Lake\Printer\ClassPrinter;
 use Lake\Validation\ClassValidation;
 use Lake\Validation\ParameterValidation;
 use Lake\Validation\TypeValidation;
-use Laminas\Code\Generator\FileGenerator;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -97,6 +96,8 @@ class MakeCommand extends Command
             str_replace('src', 'test', $classPath),
             basename($classPath).'Test'
         );
+
+        $output->writeln('Class has been create!');
 
         return 0;
     }

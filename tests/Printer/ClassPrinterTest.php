@@ -23,7 +23,7 @@ class ClassPrinterTest extends TestCase
 
         
         $this->assertIsString($printed);
-        $this->assertEquals(file_get_contents(__DIR__.'/expectedClass.txt'), $printed);
+        $this->assertEquals(file_get_contents(__DIR__.'/classContent.txt'), $printed);
     }
 
     public function testPrintFile()
