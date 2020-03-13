@@ -39,6 +39,7 @@ class MakeCommand extends Command
         $this->addArgument('name', InputArgument::REQUIRED, 'The path + class name of the file.');
         $this->addArgument('method', InputArgument::REQUIRED, 'The method name of the file.');
         
+        $this->addOption('extends', 'e', InputOption::VALUE_OPTIONAL, 'Extends class', null );
         $this->addOption('arguments', 'a', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'The Arguments', []);
         $this->addOption('return', 'r', InputOption::VALUE_OPTIONAL , 'Return Type', null);
     }

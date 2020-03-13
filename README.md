@@ -16,8 +16,11 @@ composer require --dev millancore/lake
 
 ## Usage
 
-lake works hand in hand with composer if you want it to automatically add the 'use' statements you must first run `lake dump`.
+lake works hand in hand with composer if you want it to automatically add the 'use' statements you must first run 
 
+```bash
+vendor/bin/lake dump
+```
 If there is more than one match, Lake will let you choose from those available on the project.
 
 
@@ -29,51 +32,72 @@ vendor/bin/lake make src/DirName/ClassName MethodName
 
 ## Options
 
-### Add parameters
+
+Option | Name   | Example | Result | Description
+------ | ------ | ------- | ------ | -----------
+**-e** | Extends    | `-e Controller` | `extends Controller`| Define the class of the one that extends. 
+**-i** | Implements | `-i NameInterface` | `implements NameInterface` | It defines the interfaces implements, you can use this option many times. 
+**-a** | Arguments  | `-a Int:id` | `int $id` | Arguments, you can use this option many times.
+   -   |    -       | `-a Request` | `Request $request` | If the name of the variable is not defined Lake will create the variable name from the type.
+   -   |    -       | `-a ?Array:params` | `?array $params` | Nullable argument.
+**-r** | Return     | `-r Response` | `: Response` | Defines the type of return.
+**-d** | DocBlock   | `-d 'description method'` | method Docblock | Description of the method.
+**-v** | Visibility | `-v pub` | `public func..` | It defines the visibility of the method, by default it is `public`.
+   -   |    -       | `-v pro` | `protected func..` | Defines visibility as protected.
+   -   |    -       | `-v pri` | `private func..` | Defines visibility as private.
+
+
+
+## Examples
 
 ```bash
-vendor/bin/lake make src/DirName/ClassName MethodName -a ParameterType:varName
+vendor/bin/lake make src/App/Command/CommandLake -e Command configure -a array:params
 ```
-If the name of the variable is not defined Lake will create the variable name from the type.
 
-```bash
-vendor/bin/lake make src/DirName/ClassName show -a Request
-```
-Result
+
+classFile: `src/App/Command/CommandLake.php`
 ```php
-public function show(Request $request) 
+<?php
+
+namespace Lake\App\Command;
+
+use Symfony\Component\Console\Command\Command;
+
+class CommandLake extends Command
+{
+
+    /**
+     * Undocumented function
+     *
+     * @param array $params
+     * @return void
+     */
+    public function configure(array $params)
+    {
+
+    }
+
+
+}
 ```
-
-If the parameter accepts null
-
-```bash
-...ClassName MethodName -a ?Request
-```
-
-### Return Type
-
-```bash
-vendor/bin/lake make src/DirName/ClassName show -a Request -r Response
-```
-```php
-public function show(Request $request) : Response
-```
-
-### Visibility
-
-By default the visibility is `public`, but we can define other types.
-
-Option | Result
------- | -------
--v pub | `public` By default
--v pri | `private`
--v pro | `protected`
-
-```bash
-vendor/bin/lake make src/DirName/ClassName internal -a int:id -v pri
-```
+testFile: `test/App/Command/CommandLakeTest.php`
 
 ```php
-private function internal(int $id) : array
+<?php
+
+use PHPUnit\Framework\TestCase;
+use Lake\App\Command\CommandLake;
+
+class CommandLakeTest extends TestCase
+{
+
+    public function testDummyConfigureMethod()
+    {
+
+    }
+
+
+}
 ```
+
 
