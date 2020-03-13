@@ -14,9 +14,33 @@ Lake is a command line utility that allows you to dynamically create classes and
 composer require --dev millancore/lake
 ```
 
+## Configure
+Lake uses a simple configuration file to complete some features.
+
+Basic config file `lake.yml`
+```yml
+mode: 'loose'
+src:
+  dir: 'src'
+  namespace: 'Lake'
+
+test:
+  dir: 'tests'
+```
+
+### Config options
+
+Option   | Values | Description
+---------| ------ | -----------
+mode | `loose`, `strict` | By default the mode is loose, but a strict mode can be defined if you want to use TDD in the right way. The strict mode creates only the test files and in the code part create the files with a .lake extension.
+src.dir | `src` | This is the folder where the code are, usually is `src`, but it can change.
+src.namespace | ... | This is the base name defined in the composer's autoload.
+test.dir | `tests` | This is the folder where the test are, usually is `tests`, but it can change.
+test.extends | ... | The tests extend by default the PHPUnit\Framework\TestCase, here you can define another class.
+
 ## Usage
 
-lake works hand in hand with composer if you want it to automatically add the 'use' statements you must first run 
+lake works hand in hand with composer if you want it to **automatically add the 'use'** statements you must first run 
 
 ```bash
 vendor/bin/lake dump
@@ -41,7 +65,7 @@ Option | Name   | Example | Description
 ...    | ...       | `-a Request`| If the name of the variable is not defined Lake will create the variable name from the type.
 ...    | ...       | `-a ?Array:params` | Nullable argument.
 **-r** | Return     | `-r Response` | Defines the type of return.
-**-d** | DocBlock   | `-d 'description method'` | DocBlock Description of the method.
+**-d** | DocBlock   | `-d 'description'` | DocBlock Description of the method.
 **-v** | Visibility | `-v pub` | It defines the visibility of the method, by default it is `public`.
 ...    | ...       | `-v pro` | Defines visibility as `protected`.
 ...    | ...       | `-v pri` | Defines visibility as `private`.
