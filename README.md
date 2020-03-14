@@ -36,7 +36,7 @@ mode | `loose`, `strict` | By default the mode is loose, but a strict mode can b
 src.dir | `src` | This is the folder where the code are, usually is `src`, but it can change.
 src.namespace | ... | This is the base name defined in the composer's autoload.
 test.dir | `tests` | This is the folder where the test are, usually is `tests`, but it can change.
-test.extends | ... | The tests extend by default the PHPUnit\Framework\TestCase, here you can define another class.
+test.extends | ... | The tests extend by default the `PHPUnit\Framework\TestCase`, here you can define another class.
 
 ## Usage
 
@@ -60,9 +60,9 @@ vendor/bin/lake make src/DirName/ClassName MethodName
 Option | Name   | Example | Description
 ------ | ------ | ------- | -----------
 **-e** | Extends    | `-e Controller` |  Define the class of the one that extends. 
-**-i** | Implements | `-i NameInterface` | It defines the interfaces implements, you can use this option many times. 
+**-i** | Implements | `-i NameInterface` | It defines the interfaces implements\ you can use this option many times. 
 **-a** | Arguments  | `-a Int:id` | Arguments, you can use this option many times.
-...    | ...       | `-a Request`| If the name of the variable is not defined Lake will create the variable name from the type.
+...    | ...       | `-a Request`| If the name of the variable is not defined\ Lake will create the variable name from the type.
 ...    | ...       | `-a ?Array:params` | Nullable argument.
 **-r** | Return     | `-r Response` | Defines the type of return.
 **-d** | DocBlock   | `-d 'description'` | DocBlock Description of the method.
