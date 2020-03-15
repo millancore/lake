@@ -6,7 +6,9 @@
 <a href="https://codeclimate.com/github/millancore/lake/test_coverage"><img src="https://api.codeclimate.com/v1/badges/802c342410008cbd8c08/test_coverage" /></a>
 </p>
 
-Lake is a command line utility that allows you to dynamically create classes and methods and create your reflexes for testing.
+Lake is a command line utility that allows you to dynamically create classes and methods and create your reflexes for testing, also Lake can add methods to existing classes.
+
+One of the most powerful features of Lake is that it automatically adds **"use"** statements, lake can recognize internal PHP classes, project classes and those that are present as composer dependencies.
 
 
 ## Install 
@@ -15,44 +17,29 @@ composer require --dev millancore/lake
 ```
 
 ## Configure
-Lake uses a simple configuration file to complete some features.
 
-Basic config file `lake.yml`
-```yml
-mode: 'loose'
-src:
-  dir: 'src'
-  namespace: 'Lake'
+Lake takes to Composer the configuration of your project, he expects that the folder `tests` to store the reflections of test.
 
-test:
-  dir: 'tests'
-```
+But not all projects have the same structure, if that's the case you can use the configuration file `lake.yml` and [Config options](#config-options).
 
-### Config options
-
-Option   | Values | Description
----------| ------ | -----------
-mode | `loose`, `strict` | By default the mode is loose, but a strict mode can be defined if you want to use TDD in the right way. The strict mode creates only the test files and in the code part create the files with a .lake extension.
-src.dir | `src` | This is the folder where the code are, usually is `src`, but it can change.
-src.namespace | ... | This is the base name defined in the composer's autoload.
-test.dir | `tests` | This is the folder where the test are, usually is `tests`, but it can change.
-test.extends | ... | The tests extend by default is `PHPUnit\Framework\TestCase`, but you can define another class.
 
 ## Usage
 
-lake works hand in hand with composer if you want it to **automatically add the 'use'** statements you must first run 
+In order for Lake to automatically add the `USE` statements from Composer's dependencies, you must run `lake dump`. In case there is ambiguity in the name of the class or interface Lake will give you a choice from those available.
+
+**Only run once after installing some dependencies with Composer.**
 
 ```bash
 vendor/bin/lake dump
 ```
-If there is more than one match, Lake will let you choose from those available on the project.
-
 
 ### Create a class + method
 
 ```bash
 vendor/bin/lake make src/DirName/ClassName MethodName 
 ```
+
+If the name of the method is not defined, the defined arguments will be those of the constructor. 
 
 ## Options
 
@@ -67,9 +54,10 @@ Option | Name   | Example | Description
 **-r** | Return     | `-r Response` | Defines the type of return.
 **-d** | DocBlock   | `-d 'description'` | DocBlock Description of the method.
 **-v** | Visibility | `-v pub` | It defines the visibility of the method, by default it is `public`.
-...    | ...       | `-v pro` | Defines visibility as `protected`.
-...    | ...       | `-v pri` | Defines visibility as `private`.
+...    | ...       | `-v pro` | **Defines visibility as `protected`.
+...    | ...       | `-v pri` | **Defines visibility as `private`.
 
+** **Protected and private methods do not create method test reflexes.**
 
 
 ## Examples
@@ -123,5 +111,15 @@ class CommandLakeTest extends TestCase
 
 }
 ```
+
+## Config options
+
+Option   | Values | Description
+---------| ------ | -----------
+mode | `loose`, `strict` | By default the mode is loose, but a strict mode can be defined if you want to use TDD in the right way. The strict mode creates only the test files and in the code part create the files with a .lake extension.
+src.dir | `src` | This is the folder where the code are, usually is `src`, but it can change.
+src.namespace | ... | This is the base name defined in the composer's autoload.
+test.dir | `tests` | This is the folder where the test are, usually is `tests`, but it can change.
+test.extends | ... | The tests extend by default is `PHPUnit\Framework\TestCase`, but you can define another class.
 
 
