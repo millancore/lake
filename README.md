@@ -8,7 +8,7 @@
 
 Lake is a command line utility that allows you to dynamically create classes and methods and create your reflexes for testing, also Lake can add methods to existing classes.
 
-One of the most powerful features of Lake is that it automatically adds **"use"** statements, lake can recognize internal PHP classes, project classes and those that are present as composer dependencies.
+One of the most powerful features of Lake is that it automatically adds **"USE"** statements, Lake can recognize internal PHP classes, project classes and those that are present as Composer dependencies.
 
 
 ## Install 
@@ -25,7 +25,7 @@ But not all projects have the same structure, if that's the case you can use the
 
 ## Usage
 
-In order for Lake to automatically add the `USE` statements from Composer's dependencies, you must run `lake dump`. In case there is ambiguity in the name of the class or interface Lake will give you a choice from those available.
+In order for Lake to automatically add the `USE` statements from Composer's dependencies, you must run `lake dump`. If in the process of creation there is ambiguity in the name of the class or interface Lake will give you a choice from those available.
 
 **Only run once after installing some dependencies with Composer.**
 
@@ -39,7 +39,7 @@ vendor/bin/lake dump
 vendor/bin/lake make src/DirName/ClassName MethodName 
 ```
 
-If the name of the method is not defined, the defined arguments will be those of the constructor. 
+**If the name of the method is not defined, the defined arguments will be those of the constructor.** 
 
 ## Options
 
