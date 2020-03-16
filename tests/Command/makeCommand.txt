@@ -1,0 +1,12 @@
+namespace App\Http;
+
+class Request
+{
+
+    public function list(Request $request, Int $id)
+    {
+
+    }
+
+
+}

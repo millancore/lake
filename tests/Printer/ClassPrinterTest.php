@@ -20,7 +20,6 @@ class ClassPrinterTest extends TestCase
         $generator = LakeGeneratorFixture::fixture();
 
         $printed = $this->printer->print($generator->getClass(), 'pathtest');
-
         
         $this->assertIsString($printed);
         $this->assertEquals(file_get_contents(__DIR__.'/classContent.txt'), $printed);

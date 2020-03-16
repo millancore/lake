@@ -13,7 +13,10 @@ class ConfigTest extends TestCase
 
         $psr4Autoload = $composer['autoload']['psr-4'];
         
-        $this->assertEquals(['Lake\\' => 'src/'], $psr4Autoload);
+        $this->assertEquals([
+            'Lake\\' => 'src/',
+            'App\\' => 'app/',
+        ], $psr4Autoload);
     }
 
     public function testLoadComposerFileInvalidPath()
@@ -39,7 +42,8 @@ class ConfigTest extends TestCase
             'exepath' => getcwd(),
             'mode' => 'loose',
             'src' => [
-                'src/' => 'Lake\\',
+                'app/' => 'App\\',
+                'src/' => 'Lake\\'
             ],
         ];
 

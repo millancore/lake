@@ -9,15 +9,17 @@ class LakeGeneratorFixture
     public static function fixture()
     {
         $generator = new LakeGenerator(
-            'TestClass',
-            'Lake\Tests\Name',
-            'show',
-            [
-                ['int', 'id'],
-                ['Request', 'request']
-            ],
-            ['Lake\Uses\Request']
+            false,
+            'app\Tests\TestClass',
+            ['app' => 'App']
         );
+
+        $generator->addMethod('show', [
+            ['int', 'id'],
+            ['Request', 'request']
+        ]);
+
+        $generator->addUses(['Lake\Uses\Request']);
 
         return $generator;
     }

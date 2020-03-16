@@ -7,18 +7,20 @@ class ClassValidationTest extends TestCase
 {
     public function testValidateSimpleNotationPath()
     {
-        $class = ClassValidation::validate('src\App\Http\Request');
+        list($exist, $class) = ClassValidation::validate('app\Http\Request');
 
         $this->assertIsString($class);
-        $this->assertEquals('src\App\Http\Request', $class);
+        $this->assertFalse($exist);
+        $this->assertEquals('app\Http\Request', $class);
     }
 
     public function testValidateUseColonNotationPath()
     {
-        $class = ClassValidation::validate('src:App:Http:Request');
+        list($exist, $class) = ClassValidation::validate('app:Http:Request');
         
         $this->assertIsString($class);
-        $this->assertEquals('src'.DS.'App'.DS.'Http'.DS.'Request', $class);
+        $this->assertFalse($exist);
+        $this->assertEquals('app'.DS.'Http'.DS.'Request', $class);
     }
 
 }

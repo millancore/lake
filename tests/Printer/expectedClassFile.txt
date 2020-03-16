@@ -1,6 +1,6 @@
 <?php
 
-namespace Lake\Tests\Name;
+namespace App\Tests;
 
 use Lake\Uses\Request;
 

@@ -26,7 +26,7 @@ class LakeGenerator {
         if (!$this->exists) {
             $this->class = new ClassGenerator(
                 base_name($this->classPath),
-                dirname($this->namespace)
+                baseclass($this->namespace)
             );
         } else {
             $this->class = ClassGenerator::fromReflection(
@@ -37,8 +37,10 @@ class LakeGenerator {
 
     private function namespaceResolver()
     {
+        $classPath = str_replace('/', '\\', $this->classPath);
+
         $namespace = str_replace(
-            key($this->autoload), current($this->autoload), $this->classPath
+            key($this->autoload), current($this->autoload), $classPath
         );
 
         return $namespace;

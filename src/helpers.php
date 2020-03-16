@@ -24,3 +24,10 @@ function snake($value, $delimiter = '_')
 
     return $value;
 }
+
+function baseclass($namespace)
+{
+    $namespaceParts = explode('\\', $namespace);
+
+    return implode('\\', array_slice($namespaceParts, 0, -1));
+}

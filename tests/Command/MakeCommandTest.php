@@ -14,13 +14,14 @@ class MakeCommandTest extends TestCase
         $commandTester = new CommandTester($command);
 
         $commandTester->execute([
-            'name' => 'src/App/Http/Request',
+            'name' => 'app/Http/Request',
             'method' =>  'list',
-            '--arguments' => ['Request', 'Int:id']
+            '--arguments' => ['Request', 'Int:id'],
+            '--dry-run' => true
         ]);
         $output = $commandTester->getDisplay();
 
 
-        $this->assertContains('create', $output);
+        $this->assertEquals(file_get_contents(__DIR__.DS.'makeCommand.txt'), $output);
     }
 }

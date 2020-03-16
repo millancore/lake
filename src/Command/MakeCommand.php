@@ -43,6 +43,7 @@ class MakeCommand extends Command
         $this->addOption('extends', 'e', InputOption::VALUE_OPTIONAL, 'Extends class', null );
         $this->addOption('arguments', 'a', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'The Arguments', []);
         $this->addOption('return', 'r', InputOption::VALUE_OPTIONAL , 'Return Type', null);
+        $this->addOption('dry-run', null, InputOption::VALUE_OPTIONAL, 'Screen Mode', false);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -88,7 +89,12 @@ class MakeCommand extends Command
 
         $lake->addMethod($methodName, $parameters);
         $lake->addUses($selectedUses);
--
+
+        if($input->getOption('dry-run') !== false) {
+            $output->write($lake->getClass()->generate());
+            return 0;
+        }
+
         $this->classPrinter->printFile($lake->getClass(), $classPath);
 
         $output->writeln(sprintf('code: %s.php', $classPath));

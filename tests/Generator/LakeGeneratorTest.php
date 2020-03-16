@@ -11,14 +11,9 @@ class LakeGeneratorTest extends TestCase
     public function setUp() : void
     {
         $this->generator = new LakeGenerator(
-            'TestClass',
-            'Lake\Tests\Namespace',
-            'show',
-            [
-                ['Int', 'id'],
-                ['Request', 'request']
-            ],
-            ['Lake\Uses\Request']
+            false,
+            'app\Tests\Namespace',
+            ['app' => 'App']
         );
     }
 
@@ -29,10 +24,4 @@ class LakeGeneratorTest extends TestCase
         $this->assertInstanceOf(ClassGenerator::class, $class);
     }
 
-    public function testGetTest()
-    {
-        $class = $this->generator->getTest();
-
-        $this->assertInstanceOf(ClassGenerator::class, $class);
-    }
 }

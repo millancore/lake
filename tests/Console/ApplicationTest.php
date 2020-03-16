@@ -12,12 +12,4 @@ class ApplicationTest extends TestCase
 
         $this->assertInstanceOf(ConsoleApplication::class, $app);
     }
-
-    public function testNotFoundConfigLakeFile()
-    {
-        $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('Unable to locate lake.yml file');
-
-        $app = new Application('invalid/path');
-    }
 }
