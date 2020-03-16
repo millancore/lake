@@ -24,7 +24,7 @@ class LakeGenerator {
         $this->autoload = $autoload;
 
         $this->namespace = $this->namespaceResolver();
-
+        
         if (!$this->exists) {
             $this->class = new ClassGenerator(
                 base_name($this->classPath),
@@ -43,9 +43,9 @@ class LakeGenerator {
     {
         $classPath = str_replace('/', '\\', $this->classPath);
 
-        $namespace = str_replace(
-            key($this->autoload), current($this->autoload), $classPath
-        );
+        foreach ($this->autoload as $key => $value) {
+            $namespace = str_replace($key, $value, $classPath);
+        }
 
         return $namespace;
     }

@@ -1,5 +1,6 @@
 src:
   app: 'App'
+  src: 'Lake'
 
 test:
   dir: 'test'
