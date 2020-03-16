@@ -2,6 +2,8 @@
 
 namespace Lake\Generator;
 
+use Lake\Validation\TypeValidation;
+use Laminas\Code\Generator\ClassGenerator;
 use Laminas\Code\Generator\MethodGenerator;
 use Laminas\Code\Reflection\ClassReflection;
 
@@ -32,6 +34,8 @@ class LakeGenerator {
             $this->class = ClassGenerator::fromReflection(
                 new ClassReflection('\\'.$this->namespace)
             );
+
+            $this->restoreUses();
         }
     }
 
@@ -72,4 +76,27 @@ class LakeGenerator {
             }
         }
     }
+
+    private function restoreUses()
+    {
+        $methods = $this->class->getMethods();
+
+        foreach ($methods as $method) {
+            $params = $method->getParameters();
+            
+            foreach ($params as $param) {
+
+                $type = $param->getType();
+                $newParameter = new ParameterGenerator($param->getName(), $type);
+
+                if (!TypeValidation::isPhpType($type)) {
+                    $newParameter->setType(base_name($type));
+                    $this->class->addUse($type);
+                }
+
+                $method->setParameter($newParameter);
+            }   
+        }
+    }
+
 }
