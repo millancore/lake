@@ -19,4 +19,11 @@ class HelpersTest extends TestCase
         $this->assertIsString($basename);
         $this->assertEquals('ClassName', $basename);
     }
+
+    public function testCamelCaseToSnake()
+    {
+        $snakeMethodName = snake('ThisIsACamelMethodName');
+
+        $this->assertEquals('this_is_a_camel_method_name', $snakeMethodName);
+    }
 }

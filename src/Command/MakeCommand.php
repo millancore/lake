@@ -2,6 +2,7 @@
 
 namespace Lake\Command;
 
+use Lake\Config;
 use Lake\Finder\Finder;
 use Lake\Generator\LakeGenerator;
 use Lake\Printer\ClassPrinter;
@@ -25,7 +26,7 @@ class MakeCommand extends Command
     private $config;
     private $classPrinter;
 
-    public function __construct(array $config)
+    public function __construct(Config $config)
     {
         parent::__construct();
         $this->config = $config;
@@ -37,7 +38,7 @@ class MakeCommand extends Command
         $this->filesystem = new Filesystem();
 
         $this->addArgument('name', InputArgument::REQUIRED, 'The path + class name of the file.');
-        $this->addArgument('method', InputArgument::REQUIRED, 'The method name of the file.');
+        $this->addArgument('method', InputArgument::OPTIONAL, 'The method name of the file.', '__construct');
         
         $this->addOption('extends', 'e', InputOption::VALUE_OPTIONAL, 'Extends class', null );
         $this->addOption('arguments', 'a', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'The Arguments', []);
@@ -81,24 +82,16 @@ class MakeCommand extends Command
             $parameters[] = [$type, $varName]; 
         }
 
-        $classPath = ClassValidation::validate($classPath);
+        list($exists, $classPath) = ClassValidation::validate($classPath);
 
-        $lake = new LakeGenerator(
-            $classPath,
-            dirname(str_replace('.'.DS.$this->config['src']['dir'], $this->config['src']['namespace'], $classPath)),
-            $methodName,
-            $parameters,
-            $selectedUses
-        );
-    
+        $lake = new LakeGenerator($exists, $classPath, $this->config->src);
+
+        $lake->addMethod($methodName, $parameters);
+        $lake->addUses($selectedUses);
+-
         $this->classPrinter->printFile($lake->getClass(), $classPath);
-        $this->classPrinter->printFile(
-            $lake->getTest(),
-            str_replace('src', 'test', $classPath),
-            basename($classPath).'Test'
-        );
 
-        $output->writeln('Class has been create!');
+        $output->writeln(sprintf('code: %s.php', $classPath));
 
         return 0;
     }

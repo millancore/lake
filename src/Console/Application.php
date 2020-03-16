@@ -2,7 +2,7 @@
 
 namespace Lake\Console;
 
-use RuntimeException;
+use Lake\Config;
 use Symfony\Component\Console\Application as BaseApplication;
 use Symfony\Component\Yaml\Yaml;
 
@@ -14,21 +14,23 @@ class Application extends BaseApplication
 
     public function __construct(string $executePath)
     {
-        parent::__construct('Lake, TDD Code Mirror', self::VERSION);
-        $this->loadConfig($executePath);
+        parent::__construct('Lake, Code Mirror', self::VERSION);
+        $this->config = new Config($this->loadFromConfigFile($executePath));
         $this->registerCommands();
     }
 
-    private function loadConfig($executePath)
+    private function loadFromConfigFile($executePath)
     {
         $configFile = $executePath.DS.'lake.yml';
 
-        if (!file_exists($configFile)) {
-            throw new RuntimeException('Unable to locate lake.yml file.');
+        $optionsFromFile = [];
+        if (file_exists($configFile)) {
+           $optionsFromFile = Yaml::parseFile($configFile);
         }
-
-        $this->config = Yaml::parseFile($configFile);
+        
+        return $optionsFromFile; 
     }
+
 
     private function registerCommands()
     {

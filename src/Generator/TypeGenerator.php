@@ -3,8 +3,6 @@
 namespace Lake\Generator;
 
 use Laminas\Code\Generator\GeneratorInterface;
-use Laminas\Code\Generator\Exception\InvalidArgumentException;
-
 
 final class TypeGenerator implements GeneratorInterface
 {
@@ -24,10 +22,17 @@ final class TypeGenerator implements GeneratorInterface
         return $instance;
     }
 
-    
+    /**
+     * @return string the cleaned type string
+     */
+    public function __toString()
+    {
+        return ltrim($this->generate(), '?\\');
+    }
+
+
     public function generate()
     {
         return  $this->type;
     }
-
 }

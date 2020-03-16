@@ -1,8 +1,5 @@
-mode: 'loose'
 src:
-  dir: 'src'
-  namespace: 'Lake'
+  app: 'App'
 
 test:
   dir: 'test'
-  extend: ''

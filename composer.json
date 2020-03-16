@@ -15,7 +15,8 @@
         "symfony/process": "^4.4",
         "laminas/laminas-code": "^3.4",
         "symfony/yaml": "^4.4",
-        "symfony/cache": "^4.4"
+        "symfony/cache": "^4.4",
+        "symfony/options-resolver": "^4.4"
     },
     "require-dev": {
         "phpunit/phpunit": "^7.5",
@@ -23,7 +24,8 @@
     },
     "autoload": {
         "psr-4": {
-            "Lake\\": "src/"
+            "Lake\\": "src/",
+            "App\\": "app/"
         },
         "files": ["src/helpers.php"]
     },
