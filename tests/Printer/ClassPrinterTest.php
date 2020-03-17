@@ -19,7 +19,7 @@ class ClassPrinterTest extends TestCase
     {
         $generator = LakeGeneratorFixture::fixture();
 
-        $printed = $this->printer->print($generator->getClass(), 'pathtest');
+        $printed = $generator->getFile()->generate();
         
         $this->assertIsString($printed);
         $this->assertEquals(file_get_contents(__DIR__.'/classContent.txt'), $printed);
@@ -31,8 +31,8 @@ class ClassPrinterTest extends TestCase
 
         $expectedFile = __DIR__.'/expectedClassFile';
 
-        $printed = $this->printer->print($generator->getClass(), 'pathtest');
-        $this->printer->printFile($generator->getClass(), $expectedFile, null, 'txt');
+        $printed = $generator->getFile()->generate();
+        $this->printer->printFile($generator->getFile(), $expectedFile, null, 'txt');
 
         $this->assertEquals(file_get_contents($expectedFile.'.txt'), $printed);
     }
@@ -43,8 +43,8 @@ class ClassPrinterTest extends TestCase
 
         $expectedFile = __DIR__.'/expectedClassName';
 
-        $printed = $this->printer->print($generator->getClass(), 'pathtest');
-        $this->printer->printFile($generator->getClass(), $expectedFile, 'expectedClassName', 'txt');
+        $printed = $generator->getFile()->generate();
+        $this->printer->printFile($generator->getFile(), $expectedFile, 'expectedClassName', 'txt');
 
         $this->assertEquals(file_get_contents($expectedFile.'.txt'), $printed);
     }

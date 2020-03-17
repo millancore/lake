@@ -31,7 +31,7 @@ class Config
 
         $resolver->setDefault('test', function (OptionsResolver $spoolResolver) {
             $spoolResolver->setDefaults([
-                'dir' => 'tests/',
+                'dir' => 'tests',
                 'extends' => 'PHPUnit\Framework\TestCase',
                 'style' => 'camel'
             ]);

@@ -5,6 +5,7 @@ namespace Lake\Command;
 use Lake\Config;
 use Lake\Finder\Finder;
 use Lake\Generator\LakeGenerator;
+use Lake\Generator\TestGenerator;
 use Lake\Printer\ClassPrinter;
 use Lake\Validation\ClassValidation;
 use Lake\Validation\ParameterValidation;
@@ -20,9 +21,7 @@ use Symfony\Component\Filesystem\Filesystem;
 class MakeCommand extends Command
 {
     protected static $defaultName = 'make';
-   
-    /** @var Filesystem */
-    private $filesystem;
+
     private $config;
     private $classPrinter;
 
@@ -35,8 +34,6 @@ class MakeCommand extends Command
 
     protected function configure()
     {
-        $this->filesystem = new Filesystem();
-
         $this->addArgument('name', InputArgument::REQUIRED, 'The path + class name of the file.');
         $this->addArgument('method', InputArgument::OPTIONAL, 'The method name of the file.', '__construct');
         
@@ -86,6 +83,7 @@ class MakeCommand extends Command
         list($exists, $classPath) = ClassValidation::validate($classPath);
 
         $lake = new LakeGenerator($exists, $classPath, $this->config->src);
+        $test = new TestGenerator($classPath, $methodName, $this->config);
 
         $lake->addMethod($methodName, $parameters);
         $lake->addUses($selectedUses);
@@ -95,9 +93,12 @@ class MakeCommand extends Command
             return 0;
         }
 
-        $this->classPrinter->printFile($lake->getClass(), $classPath);
+        $this->classPrinter->printFile($lake->getFile(), $classPath);
+        $this->classPrinter->printFile($test->getFile(), $test->getPath());
+
 
         $output->writeln(sprintf('code: %s.php', $classPath));
+        $output->writeln(sprintf('test: %s.php', $test->getPath()));
 
         return 0;
     }

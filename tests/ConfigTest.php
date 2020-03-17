@@ -34,7 +34,7 @@ class ConfigTest extends TestCase
         
         $expectedOptions = [
             'test' => [
-                'dir' => 'tests/',
+                'dir' => 'tests',
                 'extends' => 'PHPUnit\\Framework\\TestCase',
                 'style' => 'camel',
             ],

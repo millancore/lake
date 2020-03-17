@@ -2,5 +2,4 @@ vendor/
 cache/*
 .vscode/*
 tests/coverage/
-app/
 test/
