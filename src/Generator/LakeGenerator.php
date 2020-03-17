@@ -2,13 +2,13 @@
 
 namespace Lake\Generator;
 
-use Lake\Validation\TypeValidation;
+use Exception;
 use Laminas\Code\Generator\ClassGenerator;
+use Laminas\Code\Generator\FileGenerator;
 use Laminas\Code\Generator\MethodGenerator;
-use Laminas\Code\Reflection\ClassReflection;
 
-class LakeGenerator {
-    
+class LakeGenerator
+{
     private $exists;
     private $classPath;
     private $autoload;
@@ -17,46 +17,98 @@ class LakeGenerator {
     /** @var ClassGenerator */
     private $class;
 
+    /** @var FileGenerator */
+    private $file;
+
     public function __construct(bool $exists, string $classPath, array $autoload)
     {
         $this->exists = $exists;
         $this->classPath = $classPath;
         $this->autoload = $autoload;
 
-        $this->namespace = $this->namespaceResolver();
-        
-        if (!$this->exists) {
-            $this->class = new ClassGenerator(
-                base_name($this->classPath),
-                baseclass($this->namespace)
-            );
-        } else {
-            $this->class = ClassGenerator::fromReflection(
-                new ClassReflection('\\'.$this->namespace)
-            );
-
-            $this->restoreUses();
-        }
+        $this->init();
     }
 
-    private function namespaceResolver()
+    /**
+     * Resolve namespace from route 
+     * @return null|string
+     */
+    private function namespaceResolver(): ?string
     {
         $classPath = str_replace('/', '\\', $this->classPath);
 
+        $namespace = null;
         foreach ($this->autoload as $key => $value) {
-            $namespace = str_replace($key, $value, $classPath);
+
+            if (strpos($classPath, $key) !== false) {
+                $namespace = str_replace($key, $value, $classPath);
+                break;
+            }
         }
 
         return $namespace;
     }
 
+    /**
+     * Initialize Class and File Generators
+     * @return void
+     */
+    private function init()
+    {
+        $this->namespace = $this->namespaceResolver();
 
-    public function getClass()
+        if (!$this->exists) {
+
+            $this->class = new ClassGenerator(base_name($this->classPath), baseclass($this->namespace));
+            $this->file = new FileGenerator(['class' => $this->class]);
+
+            return;
+        }
+
+        $this->file = FileGenerator::fromReflectedFileName(
+            $this->classPath . '.php'
+        );
+
+        $classes = $this->file->getClasses();
+
+        if (count($classes) > 1) {
+            throw new Exception(
+                'This file contains more than one class, it cannot be modified by Lake'
+            );
+        }
+
+        $this->class = current($classes);
+        $this->restoreParameters();
+    }
+
+
+    /**
+     * Get Class
+     * @return ClassGenerator
+     */
+    public function getClass(): ClassGenerator
     {
         return $this->class;
     }
 
-    public function addMethod(string $name, $parameters = [] )
+
+    /**
+     * Get File With Class
+     * @return FileGenerator
+     */
+    public function getFile(): FileGenerator
+    {
+        return $this->file;
+    }
+
+    /**
+     * Add method to current class
+     *
+     * @param string $name
+     * @param array $parameters
+     * @return void
+     */
+    public function addMethod(string $name, $parameters = [])
     {
         $method = new MethodGenerator($name);
 
@@ -68,6 +120,12 @@ class LakeGenerator {
         $this->class->addMethods([$method]);
     }
 
+    /**
+     * Add uses to current class
+     *
+     * @param array $uses
+     * @return void
+     */
     public function addUses(array $uses)
     {
         foreach ($uses as $use) {
@@ -77,26 +135,24 @@ class LakeGenerator {
         }
     }
 
-    private function restoreUses()
+    /**
+     * Restore Type Parameter
+     *
+     * @return void
+     */
+    private function restoreParameters()
     {
         $methods = $this->class->getMethods();
 
         foreach ($methods as $method) {
             $params = $method->getParameters();
-            
+
             foreach ($params as $param) {
 
                 $type = $param->getType();
-                $newParameter = new ParameterGenerator($param->getName(), $type);
-
-                if (!TypeValidation::isPhpType($type)) {
-                    $newParameter->setType(base_name($type));
-                    $this->class->addUse($type);
-                }
-
+                $newParameter = new ParameterGenerator($param->getName(), base_name($type));
                 $method->setParameter($newParameter);
-            }   
+            }
         }
     }
-
 }

@@ -64,7 +64,7 @@ class MakeCommand extends Command
             list($type, $varName) = ParameterValidation::validate($argument);
 
             if (!TypeValidation::isPhpType($type)) {
-                $uses = Finder::findClassByName($type);
+                $uses = Finder::findClassByName($type, $this->config);
 
                 if (count($uses) == 1) {
                     $selectedUses[] = current($uses);
@@ -91,7 +91,7 @@ class MakeCommand extends Command
         $lake->addUses($selectedUses);
 
         if($input->getOption('dry-run') !== false) {
-            $output->write($lake->getClass()->generate());
+            $output->write($lake->getFile()->generate());
             return 0;
         }
 

@@ -2,27 +2,28 @@
 
 namespace Lake\Finder;
 
+use Lake\Config;
 use Lake\Contract\FinderInterface;
 
 class Finder implements FinderInterface
 {
     private $finders;
 
-    public function __construct()
+    public function __construct(Config $config)
     {
         $vendorFileClassMap = LAKE_ROOT.DS.'cache/vendor.php';
 
         $this->finders = [
           new InternalFinder,
-          new SourceFinder,
+          new SourceFinder($config->src),
           new VendorFinder($vendorFileClassMap)
         ];
         
     }
 
-    public static function findClassByName(string $className) : array
+    public static function findClassByName(string $className, Config $config) : array
     {
-        return (new self)->findClass($className);
+        return (new self($config))->findClass($className);
     }
 
 

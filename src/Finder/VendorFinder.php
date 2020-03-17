@@ -14,6 +14,12 @@ class VendorFinder implements FinderInterface
         $this->loadClassMap($vendorFileClassMap);
     }
 
+    /**
+     * Find class present in vendor Composer
+     *
+     * @param String $className
+     * @return array
+     */
     public function findClass(String $className) : array
     {
         if(isset($this->classMap[$className])) {
@@ -23,6 +29,12 @@ class VendorFinder implements FinderInterface
         return [];
     }
 
+    /**
+     * Load from vendor dump
+     *
+     * @param string $vendorFileClassMap
+     * @return void
+     */
     private function loadClassMap($vendorFileClassMap)
     {
 

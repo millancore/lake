@@ -12,10 +12,14 @@ class SourceFinder implements FinderInterface
 {
     private $classMap;
 
-    public function __construct()
+    public function __construct(array $autoload)
     {
-        $this->loadClassMap();
+        $classMap = [];
+        foreach ($autoload as $dir => $namespace) {
+           $classMap = array_merge($classMap, $this->loadClassMap($dir, $namespace));
+        }
 
+        $this->classMap = $classMap;
     }
 
     public function findClass(String $className) : array
@@ -27,10 +31,8 @@ class SourceFinder implements FinderInterface
         return [];
     }
 
-    private function loadClassMap()
+    private function loadClassMap($dir, $namespace) : array
     {
-        $dir = getcwd().DIRECTORY_SEPARATOR.'src';
-
         $directory = new RecursiveDirectoryIterator($dir);
         $iterator = new RecursiveIteratorIterator($directory);
 
@@ -38,14 +40,17 @@ class SourceFinder implements FinderInterface
  
         $classes = [];
         foreach ($regex as $info) {
+
             preg_match('/([A-Z]\w+).php/', current($info), $matches);
+
             if (isset($matches[1])) {
+
                 $class = str_replace($matches[0], $matches[1], current($info));
-                $classes[$matches[1]][] = str_replace($dir, 'Lake', $class);
+                $classes[$matches[1]][] = str_replace('/', '\\',str_replace($dir, $namespace, $class));
             }
         }
 
-        $this->classMap = $classes;
+        return $classes;
     }
 
 }
