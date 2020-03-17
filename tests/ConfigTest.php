@@ -14,8 +14,7 @@ class ConfigTest extends TestCase
         $psr4Autoload = $composer['autoload']['psr-4'];
         
         $this->assertEquals([
-            'Lake\\' => 'src/',
-            'App\\' => 'app/',
+            'Lake\\' => 'src/'
         ], $psr4Autoload);
     }
 
@@ -42,7 +41,6 @@ class ConfigTest extends TestCase
             'exepath' => getcwd(),
             'mode' => 'loose',
             'src' => [
-                'app/' => 'App\\',
                 'src/' => 'Lake\\'
             ],
         ];

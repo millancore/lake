@@ -14,7 +14,7 @@ class MakeCommandTest extends TestCase
         $commandTester = new CommandTester($command);
 
         $commandTester->execute([
-            'name' => 'app/Http/Request',
+            'name' => 'src/Http/Request',
             'method' =>  'list',
             '--arguments' => ['Request', 'Int:id'],
             '--dry-run' => true

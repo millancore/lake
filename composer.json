@@ -24,8 +24,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Lake\\": "src/",
-            "App\\": "app/"
+            "Lake\\": "src/"
         },
         "files": ["src/helpers.php"]
     },

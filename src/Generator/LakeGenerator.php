@@ -40,8 +40,9 @@ class LakeGenerator
         $namespace = null;
         foreach ($this->autoload as $key => $value) {
 
+            $key = trim($key, '/');
             if (strpos($classPath, $key) !== false) {
-                $namespace = str_replace($key, $value, $classPath);
+                $namespace = str_replace($key, trim($value, '\\'), $classPath);
                 break;
             }
         }
