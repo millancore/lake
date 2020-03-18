@@ -7,7 +7,12 @@ use Lake\Uses\Request;
 class TestClass
 {
 
-    public function show(int $id, Request $request)
+    /**
+     * @param int $id
+     * @param Request $request
+     * @return void
+     */
+    public function show(int $id, Request $request) : void
     {
 
     }

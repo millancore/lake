@@ -41,11 +41,12 @@ class TestGenerator
         }
 
         $this->test = str_replace($root, $this->config->test['dir'], $this->class).'Test';
+        $this->test = str_replace('.\\', '', $this->test);
 
         $testMethod = new MethodGenerator('test'.ucfirst($this->method));
         $testMethod->setBody(' ');
 
-        if (!file_exists($this->test.'.php')) {
+        if (!file_exists($this->config->executepath.DS.$this->test.'.php')) {
 
             $extendsClass  = $this->config->test['extends'];
 

@@ -11,7 +11,8 @@ Lake is a command line utility that allows you to dynamically create classes and
 One of the most powerful features of Lake is that it automatically adds **"USE"** statements, Lake can recognize internal PHP classes, project classes and those that are present as Composer dependencies.
 
 
-## Install 
+## Install  
+**PHP 7.1 or newer**
 ```bash
 composer require --dev millancore/lake
 ```
@@ -47,7 +48,6 @@ vendor/bin/lake make src/DirName/ClassName MethodName
 Option | Name   | Example | Description
 ------ | ------ | ------- | -----------
 **-e** | Extends    | `-e Controller` |  Define the class of the one that extends. 
-**-i** | Implements | `-i NameInterface` | It defines the interfaces implements<br /> you can use this option many times. 
 **-a** | Arguments  | `-a Int:id` | Method argument, you can use this option many times.
 ...    | ...       | `-a Request`| If the name of the variable is not defined<br /> Lake will create the variable name from the type.
 ...    | ...       | `-a ?Array:params` | Nullable argument.
@@ -84,7 +84,7 @@ class CommandLake extends Command
      * @param array $params
      * @return void
      */
-    public function configure(array $params)
+    public function configure(array $params) : void
     {
 
     }

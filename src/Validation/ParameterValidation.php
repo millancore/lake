@@ -4,6 +4,12 @@ namespace Lake\Validation;
 
 class ParameterValidation
 {
+    /**
+     * Validate Parameter
+     *
+     * @param string $argument
+     * @return array
+     */
     public static function validate(string $argument) : array 
     {
         if (!strpos($argument, ':') === false) {
@@ -12,7 +18,7 @@ class ParameterValidation
             $type = $argument;
             $varName = lcfirst(TypeValidation::clear($argument));
         }
-
+    
         TypeValidation::validate($type);
         NameValidation::validate($varName);
 

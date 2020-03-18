@@ -36,10 +36,14 @@ class MakeCommand extends Command
     {
         $this->addArgument('name', InputArgument::REQUIRED, 'The path + class name of the file.');
         $this->addArgument('method', InputArgument::OPTIONAL, 'The method name of the file.', '__construct');
-        
-        $this->addOption('extends', 'e', InputOption::VALUE_OPTIONAL, 'Extends class', null );
+
+        $this->addOption('extends', 'e', InputOption::VALUE_OPTIONAL, 'Extends class', null);
+
         $this->addOption('arguments', 'a', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'The Arguments', []);
-        $this->addOption('return', 'r', InputOption::VALUE_OPTIONAL , 'Return Type', null);
+        $this->addOption('return', 'r', InputOption::VALUE_OPTIONAL, 'Return Type', 'void');
+        $this->addOption('docblock', 'd', InputOption::VALUE_OPTIONAL, 'DocBlock description', null);
+
+
         $this->addOption('dry-run', null, InputOption::VALUE_OPTIONAL, 'Screen Mode', false);
     }
 
@@ -48,9 +52,10 @@ class MakeCommand extends Command
         $classPath = $input->getArgument('name');
         $methodName = $input->getArgument('method');
 
+        $extends = $input->getOption('extends');
         $arguments = $input->getOption('arguments');
-
-        $helper = $this->getHelper('question');
+        $docblock = $input->getOption('docblock');
+        $return = $input->getOption('return');
 
 
         $selectedUses = [];
@@ -61,34 +66,31 @@ class MakeCommand extends Command
             list($type, $varName) = ParameterValidation::validate($argument);
 
             if (!TypeValidation::isPhpType($type)) {
-                $uses = Finder::findClassByName($type, $this->config);
-
-                if (count($uses) == 1) {
-                    $selectedUses[] = current($uses);
-                }
-
-                if (count($uses) > 1) {
-                    $question = new ChoiceQuestion(
-                        sprintf('Please select a class for the "%s" parameter.', $type),
-                        $uses
-                    );
-
-                    $selectedUses[] = $helper->ask($input, $output, $question);
-                }
+               $selectedUses[] = $this->findUse($type, 'parameter', $input, $output);
             }
 
-            $parameters[] = [$type, $varName]; 
+            $parameters[] = [$type, $varName];
         }
+
+        if (!is_null($extends)) {
+            $extends = $selectedUses[] = $this->findUse($extends, 'extends', $input, $output);
+        }
+
+        if (!TypeValidation::isPhpType($return)) {
+            $selectedUses[] = $this->findUse($return, 'return', $input, $output);
+        }
+
 
         list($exists, $classPath) = ClassValidation::validate($classPath);
 
         $lake = new LakeGenerator($exists, $classPath, $this->config->src);
         $test = new TestGenerator($classPath, $methodName, $this->config);
 
-        $lake->addMethod($methodName, $parameters);
         $lake->addUses($selectedUses);
+        $lake->addMethod($methodName, $parameters, $return, $docblock);
+        $lake->setExtends($extends);
 
-        if($input->getOption('dry-run') !== false) {
+        if ($input->getOption('dry-run') !== false) {
             $output->write($lake->getFile()->generate());
             return 0;
         }
@@ -101,5 +103,25 @@ class MakeCommand extends Command
         $output->writeln(sprintf('test: %s.php', $test->getPath()));
 
         return 0;
+    }
+
+
+    private function findUse($name, $type, $input, $output)
+    {
+        $helper = $this->getHelper('question');
+        $uses = Finder::findClassByName($name, $this->config);
+
+        if (count($uses) == 1) {
+            return current($uses);
+        }
+
+        if (count($uses) > 1) {
+            $question = new ChoiceQuestion(
+                sprintf('Please select a class for the "%s" %s.', $name, $type),
+                $uses
+            );
+
+            return $helper->ask($input, $output, $question);
+        }
     }
 }

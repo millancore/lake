@@ -4,8 +4,9 @@ namespace Lake\Generator;
 
 use Exception;
 use Laminas\Code\Generator\ClassGenerator;
+use Laminas\Code\Generator\DocBlock\Tag;
+use Laminas\Code\Generator\DocBlockGenerator;
 use Laminas\Code\Generator\FileGenerator;
-use Laminas\Code\Generator\MethodGenerator;
 
 class LakeGenerator
 {
@@ -35,7 +36,8 @@ class LakeGenerator
      */
     private function namespaceResolver(): ?string
     {
-        $classPath = str_replace('/', '\\', $this->classPath);
+        $classPath = str_replace('.\\', '', $this->classPath);
+        $classPath = str_replace('/', '\\', $classPath);
 
         $namespace = null;
         foreach ($this->autoload as $key => $value) {
@@ -109,13 +111,24 @@ class LakeGenerator
      * @param array $parameters
      * @return void
      */
-    public function addMethod(string $name, $parameters = [])
+    public function addMethod(string $name, $parameters = [], string $return = 'void', string $docBlock = null)
     {
         $method = new MethodGenerator($name);
 
+        $docBlockTags = [];
         foreach ($parameters as $parameter) {
             $method->setParameter(new ParameterGenerator($parameter[1], $parameter[0]));
+            $docBlockTags[] = new Tag\ParamTag($parameter[1], $parameter[0]);
         }
+
+        if ($name != '__construct') {
+            $method->setReturnType($return);
+            $docBlockTags[] = new Tag\ReturnTag($return);
+        }
+
+        $method->setDocBlock(
+            new DocBlockGenerator($docBlock, null, $docBlockTags)
+        );
 
         $method->setBody(' ');
         $this->class->addMethods([$method]);
@@ -130,10 +143,29 @@ class LakeGenerator
     public function addUses(array $uses)
     {
         foreach ($uses as $use) {
-            if (!$this->class->hasUse($use)) {
+            if (!$this->class->hasUse($use) && !is_null($use)) {
                 $this->class->addUse($use);
             }
         }
+    }
+
+    /**
+     * Set extends class
+     *
+     * @param string|null $extends
+     * @return void
+     */
+    public function setExtends(?string $extends)
+    {
+        if (is_null($extends)) {
+            return;
+        }
+
+        if ($this->exists) {
+            throw new Exception('Invalid extends to existing class');
+        }
+
+        $this->class->setExtendedClass($extends);
     }
 
     /**
@@ -154,6 +186,8 @@ class LakeGenerator
                 $newParameter = new ParameterGenerator($param->getName(), base_name($type));
                 $method->setParameter($newParameter);
             }
+
+            $method->setReturnType(base_name($method->getReturnType()));
         }
     }
 }
