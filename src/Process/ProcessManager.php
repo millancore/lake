@@ -12,7 +12,7 @@ class ProcessManager
     /**
      * The filesystem instance.
      *
-     * @var Symfony\Component\Filesystem\Filesystem
+     * @var Filesystem
      */
     protected $files;
 
@@ -34,7 +34,7 @@ class ProcessManager
     /**
      * Create a new Composer manager instance.
      *
-     * @param  Symfony\Component\Filesystem\Filesystem $files
+     * @param  Filesystem $files
      * @param  string|null  $workingPath
      * @return void
      */

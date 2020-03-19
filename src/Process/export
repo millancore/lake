@@ -33,17 +33,16 @@ while (!$staticClass) {
 }
 
 $staticClass = '\\Composer\\Autoload\\' . $staticClass;
-
 $classMap = $staticClass::$classMap;
 
 $classes = [];
-
 foreach ($classMap as $key => $value) {
-    $classes[base_name($key)][] = $key;
+
+    $fqnClassName = ltrim($key, '\\');
+    $parts = explode('\\', $fqnClassName);
+    $className = array_pop($parts);
+
+    $classes[$className][] = $key;
 }
 
-$file = new \Laminas\Code\Generator\FileGenerator([
-    'body' => 'return ' . var_export($classes, true) . ';'
-]);
-
-file_put_contents($argv[2].'/vendor.php', $file->generate());
+file_put_contents($argv[2].'/vendor.php', '<?php return '. var_export($classes, true). ';');

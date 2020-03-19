@@ -187,7 +187,9 @@ class LakeGenerator
                 $method->setParameter($newParameter);
             }
 
-            $method->setReturnType(base_name($method->getReturnType()));
+            if (!is_null($method->getReturnType())) {
+                $method->setReturnType(base_name($method->getReturnType()));
+            }
         }
     }
 }

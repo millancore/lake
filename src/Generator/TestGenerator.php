@@ -10,6 +10,9 @@ use Laminas\Code\Generator\MethodGenerator;
 
 class TestGenerator
 {
+    const PREFIX_NAME = 'testDummy';
+    const POSTFIX_FILE = 'Test';
+
     private $class;
     private $test;
     private $method;
@@ -40,17 +43,17 @@ class TestGenerator
             }
         }
 
-        $this->test = str_replace($root, $this->config->test['dir'], $this->class).'Test';
+        $this->test = str_replace($root, $this->config->test['dir'], $this->class).self::POSTFIX_FILE;
         $this->test = str_replace('.\\', '', $this->test);
 
-        $testMethod = new MethodGenerator('test'.ucfirst($this->method));
+        $testMethod = new MethodGenerator(self::PREFIX_NAME.ucfirst($this->method));
         $testMethod->setBody(' ');
 
-        if (!file_exists($this->config->executepath.DS.$this->test.'.php')) {
+        if (!file_exists($this->test.'.php')) {
 
             $extendsClass  = $this->config->test['extends'];
 
-            $testClass = new ClassGenerator(base_name($this->class).'Test');
+            $testClass = new ClassGenerator(base_name($this->class).self::POSTFIX_FILE);
             $testClass->setExtendedClass($extendsClass);
             $testClass->addUse($extendsClass);
             $testClass->addMethods([$testMethod]);
@@ -62,7 +65,7 @@ class TestGenerator
             return;
         } 
 
-        $this->file = FileGenerator::fromReflectedFileName($this->test);
+        $this->file = FileGenerator::fromReflectedFileName($this->test.'.php');
 
         $classes = $this->file->getClasses();
 
@@ -73,7 +76,7 @@ class TestGenerator
         }
 
         $this->class = current($classes);
-        $testClass->addMethods([$testMethod]);
+        $this->class->addMethods([$testMethod]);
 
     }
 
