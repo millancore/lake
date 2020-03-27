@@ -36,8 +36,7 @@ class LakeGenerator
      */
     private function namespaceResolver(): ?string
     {
-        $classPath = str_replace('.\\', '', $this->classPath);
-        $classPath = str_replace('/', '\\', $classPath);
+        $classPath = str_replace('/', '\\', realpath($this->classPath));
 
         $namespace = null;
         foreach ($this->autoload as $key => $value) {
@@ -126,9 +125,12 @@ class LakeGenerator
             $docBlockTags[] = new Tag\ReturnTag($return);
         }
 
-        $method->setDocBlock(
-            new DocBlockGenerator($docBlock, null, $docBlockTags)
-        );
+        if (!empty($parameters) || !is_null($docBlock) ) {
+            $method->setDocBlock(
+                new DocBlockGenerator($docBlock, null, $docBlockTags)
+            );
+        }
+
 
         $method->setBody(' ');
         $this->class->addMethods([$method]);
