@@ -58,10 +58,7 @@ class MakeCommand extends Command
             $input->getOption('docblock')
         );
 
-        $class = new LakeClass(
-            $input->getArgument('name'),
-            $input->getOption('extends'),
-        );
+        $class = new LakeClass($input->getArgument('name'), $input->getOption('extends'));
 
         if ($method->isEmptyConstruct()) {
             if ($this->addEmptyConstruct($questionHelper, $input, $output)) {
@@ -82,8 +79,8 @@ class MakeCommand extends Command
             return 0;
         }
 
-        $this->printer->print($class);
-        //$this->classPrinter->printFile($test->getFile(), $test->getPath());
+        $this->printer->print($class, $class->getFullPath());
+        //$this->printer->print($test->getFile(), $test->getPath());
 
 
         $output->writeln(sprintf('code: %s', $class->getFullPath()));

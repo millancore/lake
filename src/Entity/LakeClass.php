@@ -2,12 +2,13 @@
 
 namespace Lake\Entity;
 
+use Lake\Contract\GeneratorInterface;
 use Lake\Exception\LakeException;
 use Lake\Finder\GlobalFinder;
 use Laminas\Code\Generator\ClassGenerator;
 use Laminas\Code\Generator\FileGenerator;
 
-class LakeClass
+class LakeClass implements GeneratorInterface
 {
     const EXTENSION = '.php'; 
 
@@ -55,7 +56,7 @@ class LakeClass
         }
 
         if ($this->exists ) {
-            throw new LakeException('Invalid extends to existing class');
+            throw new LakeException('Invalid extends on existing class');
         }
 
         $found = GlobalFinder::findUse($extends);

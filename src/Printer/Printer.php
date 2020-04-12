@@ -2,6 +2,7 @@
 
 namespace Lake\Printer;
 
+use Lake\Contract\GeneratorInterface;
 use Lake\Entity\LakeClass;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -14,9 +15,9 @@ class Printer
         $this->filesystem = $filesystem;
     }
     
-    public function print(LakeClass $class)
+    public function print(GeneratorInterface $class, $path, $name = null, $ext = null )
     {
-        $this->filesystem->dumpFile($class->getFullPath(), $class->generate());
+        $this->filesystem->dumpFile($path, $class->generate());
     }
 
     

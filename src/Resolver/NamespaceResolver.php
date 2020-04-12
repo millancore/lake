@@ -24,6 +24,6 @@ class NamespaceResolver
             }
         }
         
-        return $namespace;
+        return baseclass($namespace);
     }
 }

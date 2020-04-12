@@ -30,9 +30,9 @@ class Method
     )
     {
         $this->setName($name);
+        $this->setDocBlock($docBlock);
         $this->setParameters($parameters);
         $this->setReturnType($returnType);
-        $this->setDocBlock($docBlock);
     }
     
     public function setName(string $name = null)
@@ -48,7 +48,13 @@ class Method
     public function setParameters(array $parameters)
     {
         foreach ($parameters as $parameter) {
-            $this->parameters[] = Parameter::fromString($parameter);
+            $parameter = Parameter::fromString($parameter);
+            $this->docBlock->addTag(
+                Tag::TYPE_PARAM,
+                $parameter->getName(),
+                [$parameter->getType()->getName()]
+            );
+            $this->parameters[] = $parameter;
         }
 
         return $this;
@@ -85,7 +91,7 @@ class Method
 
     public function setDocBlock(?string $docBlock)
     {
-        $this->docBlock = $docBlock;
+        $this->docBlock = new DocBlock($docBlock);
         return $this;
     }
 
@@ -137,6 +143,8 @@ class Method
             $this->uses[] = $this->returnType->getUse();
             $method->setReturnType($this->returnType->getName());
         }
+
+        $method->setDocBlock($this->docBlock->generate());
 
         return $method->setBody(' ');
     }
