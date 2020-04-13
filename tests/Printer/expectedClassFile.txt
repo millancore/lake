@@ -1,18 +1,17 @@
 <?php
 
-namespace App\Tests;
-
-use Lake\Uses\Request;
+use Lake\Entity\Type;
 
 class TestClass
 {
 
     /**
+     * Undocumented function
+     *
      * @param int $id
-     * @param Request $request
-     * @return void
+     * @param Type $type
      */
-    public function show(int $id, Request $request) : void
+    public function show(int $id, Type $type)
     {
 
     }

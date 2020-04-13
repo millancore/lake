@@ -6,11 +6,12 @@ class Request
 {
 
     /**
+     * Undocumented function
+     *
      * @param Request $request
      * @param Int $id
-     * @return void
      */
-    public function list(Request $request, Int $id) : void
+    public function list(Request $request, Int $id)
     {
 
     }

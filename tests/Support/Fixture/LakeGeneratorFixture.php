@@ -2,25 +2,22 @@
 
 namespace Lake\Tests\Support\Fixture;
 
-use Lake\Generator\LakeGenerator;
+use Lake\Entity\LakeClass;
+use Lake\Entity\Method;
 
 class LakeGeneratorFixture 
 {
     public static function fixture()
     {
-        $generator = new LakeGenerator(
-            false,
-            'app\Tests\TestClass',
-            ['app' => 'App']
-        );
+        $class = new LakeClass('src\Tests\TestClass');
+        $class->addMethod(new Method(
+            'show',
+            [
+                'int:id',
+                'Type'
+            ]
+        ));
 
-        $generator->addMethod('show', [
-            ['int', 'id'],
-            ['Request', 'request']
-        ]);
-
-        $generator->addUses(['Lake\Uses\Request']);
-
-        return $generator;
+        return $class;
     }
 }
