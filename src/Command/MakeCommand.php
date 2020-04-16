@@ -6,6 +6,7 @@ use Lake\Config;
 use Lake\Entity\LakeClass;
 use Lake\Entity\Method;
 use Lake\Finder\GlobalFinder;
+use Lake\Generator\TestGenerator;
 use Lake\Printer\Printer;
 use Lake\Resolver\NamespaceResolver;
 use Symfony\Component\Console\Command\Command;
@@ -79,12 +80,14 @@ class MakeCommand extends Command
             return 0;
         }
 
+        $test = (new TestGenerator($class, $this->config))->getTest();
+
         $this->printer->print($class, $class->getFullPath());
-        //$this->printer->print($test->getFile(), $test->getPath());
+        $this->printer->print($test, $test->getFullPath());
 
 
         $output->writeln(sprintf('code: %s', $class->getFullPath()));
-        //$output->writeln(sprintf('test: %s.php', $test->getPath()));
+        $output->writeln(sprintf('test: %s', $test->getFullPath()));
 
         return 0;
     }

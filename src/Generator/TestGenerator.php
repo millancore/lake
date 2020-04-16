@@ -2,103 +2,64 @@
 
 namespace Lake\Generator;
 
-use Exception;
 use Lake\Config;
-use Laminas\Code\Generator\ClassGenerator;
-use Laminas\Code\Generator\FileGenerator;
-use Laminas\Code\Generator\MethodGenerator;
+use Lake\Entity\LakeClass;
+use Lake\Entity\Method;
 
 class TestGenerator
 {
-    const PREFIX_NAME = 'testDummy';
-    const POSTFIX_FILE = 'Test';
+    const PREFIX_METHOD = 'testDummy';
+    const POSTFIX_NAME = 'Test';
 
     private $class;
     private $test;
-    private $method;
+
     private $config;
 
-    private $file;
-
-    public function __construct(string $class, string $method, Config $config)
+    public function __construct(LakeClass $class, Config $config)
     {
         $this->class = $class;
-        $this->method = $method;
-        $this->config = $config;
-     
+        $this->config = $config->test;
         $this->init();
     }
 
     private function init()
     {
+        $root = explode(DS, $this->class->getPath());
 
-        $autoload = $this->config->src;
-     
-        $root = null;
-        foreach ($autoload as $key => $value) {
+        $testPath = str_replace(
+            current($root),
+            $this->config['dir'], 
+            $this->class->getPath()
+        );
 
-            if (strpos($this->class, trim($key, '/')) !== false) {
-                $root = trim($key, '/');
-                break;
-            }
-        }
+        $this->test = new LakeClass($testPath.self::POSTFIX_NAME);
 
-        $this->test = str_replace($root, $this->config->test['dir'], $this->class).self::POSTFIX_FILE;
-        $this->test = str_replace('.\\', '', $this->test);
-
-        $testMethod = new MethodGenerator(self::PREFIX_NAME.ucfirst($this->method));
-        $testMethod->setBody(' ');
-
-        if (!file_exists($this->test.'.php')) {
-
-            $extendsClass  = $this->config->test['extends'];
-
-            $testClass = new ClassGenerator(base_name($this->class).self::POSTFIX_FILE);
-            $testClass->setExtendedClass($extendsClass);
-            $testClass->addUse($extendsClass);
-            $testClass->addMethods([$testMethod]);
-
-            $this->file = new FileGenerator([
-                'class' => $testClass
-            ]);
-
-            return;
-        } 
-
-        $this->file = FileGenerator::fromReflectedFileName($this->test.'.php');
-
-        $classes = $this->file->getClasses();
-
-        if (count($classes) > 1) {
-            throw new Exception(
-                'This file contains more than one class, it cannot be modified by Lake'
+        if (!$this->test->exists()) {
+            $this->test->setExtendedClass($this->config['extends']);
+            
+            $this->test->addUse(
+                $this->class->getNamespace().'\\'.$this->class->getName()
             );
         }
 
-        $this->class = current($classes);
-        $this->class->addMethods([$testMethod]);
+        $classMethod = $this->class->getMethod();
 
+        if($classMethod->getName() == $classMethod::DEFAULT_NAME) {
+            return;
+        }
+
+        $name = self::PREFIX_METHOD.ucfirst($classMethod->getName());
+
+        if ($this->config['style'] == 'snake') {
+            $name = snake($name);
+        }
+
+        $this->test->addMethod(new Method($name));
     }
 
-    /**
-     * Get FileGenerator Test
-     *
-     * @return FileGenerator
-     */
-    public function getFile() : FileGenerator
-    {
-        return $this->file;
-    }
-
-
-    /**
-     * Get Test path
-     *
-     * @return string
-     */
-    public function getPath() : string
+    public function getTest()
     {
         return $this->test;
     }
-
 }
