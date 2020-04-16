@@ -21,8 +21,6 @@ class MakeCommandTest extends TestCase
         ]);
         $output = $commandTester->getDisplay();
 
-        file_put_contents('test.txt', $output);
-
         $this->assertEquals(file_get_contents(__DIR__.DS.'makeCommand.txt'), $output);
     }
 }

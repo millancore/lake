@@ -74,9 +74,24 @@ class LakeClass implements GeneratorInterface
         $this->namespace = $namespace;
     }
 
+    public function getNamespace()
+    {
+        return $this->namespace;
+    }
+
+    public function addUse(string $use)
+    {
+        $this->uses[] = $use;
+    }
+
     public function addMethod(Method $method)
     {
         $this->method = $method;
+    }
+
+    public function getMethod()
+    {
+        return $this->method;
     }
 
     public function getPath()
@@ -94,6 +109,11 @@ class LakeClass implements GeneratorInterface
         return $this->file;
     }
 
+    public function getName()
+    {
+        return $this->name;
+    }
+
     public function exists()
     {
         return $this->exists;
@@ -106,10 +126,10 @@ class LakeClass implements GeneratorInterface
 
         if ($this->method) {
             $method = $this->method->generate();
-            $this->addUses($class);
             $class->addMethods([$method]);
         }
 
+        $this->addUses($class);
         $class->setExtendedClass($this->extends);
 
         return $file->generate();
@@ -138,10 +158,11 @@ class LakeClass implements GeneratorInterface
 
     private function addUses(ClassGenerator $class)
     {
-        $uses = array_merge(
-            $this->method->getUses(),
-            $this->uses
-        );
+        $uses = $this->uses;
+
+        if($this->method) {
+            $uses = array_merge($this->method->getUses(), $uses);
+        }
 
         foreach ($uses as $use) {
             if (!$class->hasUse($use) && !is_null($use)) {

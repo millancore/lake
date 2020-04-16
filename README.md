@@ -53,12 +53,6 @@ Option | Name   | Example | Description
 ...    | ...       | `-a ?Array:params` | Nullable argument.
 **-r** | Return     | `-r Response` | Defines the type of return.
 **-d** | DocBlock   | `-d 'description'` | DocBlock Description of the method.
-**-v** | Visibility | `-v pub` | It defines the visibility of the method, by default it is `public`.
-...    | ...       | `-v pro` | **Defines visibility as `protected`.
-...    | ...       | `-v pri` | **Defines visibility as `private`.
-
-** **Protected and private methods do not create method test reflexes.**
-
 
 ## Examples
 

@@ -71,6 +71,9 @@ class Method
         }
 
         $this->returnType = new Type($returnType);
+        $this->docBlock->addTag(
+            Tag::TYPE_RETURN, $returnType, [$returnType]
+        );
         return $this;
     }
 
